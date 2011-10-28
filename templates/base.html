@@ -46,28 +46,72 @@
     {% compress css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">
     {% endcompress %}
+    <style type="text/css">
+    /* MetaWebPro font family licensed from fontshop.com. WOFF-FTW! */
+    // {{ debug }}
+    @font-face {
+        font-family: 'MetaBold';
+	src: url('//www.mozilla.com/img/fonts/MetaWebPro-Bold.eot');
+	src: local({% if debug %}'{{ STATIC_URL }}fonts/MetaWebPro-Bold.woff'{% else %}'☺'{% endif %}), url('//www.mozilla.com/img/fonts/MetaWebPro-Bold.woff') format('woff');
+        font-weight: bold;
+   }
+   </style>
 <title>{% block title_matter %}{% endblock %}</title>
 {% block head_matter %}{% endblock %}
 </head>
 
-<body>
-<div id="menu">
- <div id="auth">
-   {% include "accounts/user_forms.html" %}
-   <noscript>Not logged in</noscript>
- </div>
- <ul>
-   <li>Mozilla Localization</li>
-   <li><a href="{% url homepage.views.index %}">Home</a></li>
-   <li><a href="{% url homepage.views.teams %}">Teams</a></li>
-   <li><a href="https://wiki.mozilla.org/L10n">Documentation</a></li>
-   {% block extra_nav_list_items %}{% endblock %}
- </ul>
- <br>
-</div>
-<h1></h1>
-{% block content %}{% endblock %}
-<div id="page_footer"><a href="{% url privacy.views.show_policy %}">Privacy policy</a></div>
+<body {% block body_tag %}{% endblock %}>
+
+		<nav>
+			<!-- Not implemented yet
+			<form id="quick-search" action="http://www.google.com/cse" title="Search Mozilla sites">
+				<input type="hidden" name="cx" value="002443141534113389537:ysdmevkkknw">
+				<input type="hidden" name="cof" value="FORID:0">
+				<input type="search" name="q" id="q" placeholder="Search"><input type="image" src="images/search-submit.png" alt="Search" id="quick-search-btn">
+			</form>
+			-->
+
+			<div id="auth">
+				{% include "accounts/user_forms.html" %}
+				<noscript>Not logged in</noscript>
+<!--				<a href="homepage-login.html">Sign in</a> |
+				<a href="">Register</a>-->
+			</div>
+
+
+			<ul>
+				<li><a href="/" class="homepage-link">Mozilla Localization</a></li>
+				<li><a href="{% url homepage.views.index %}">Home</a></li>
+				<li><a href="{% url homepage.views.teams %}">Teams</a></li>
+				<li><a href="https://wiki.mozilla.org/L10n">Documentation</a></li>
+				{% block extra_nav_list_items %}{% endblock %}
+
+			</ul>
+
+		</nav>
+
+		<header>
+			<div id="header-background"></div>
+			<div id="header-content">
+				<h1><a href="/" title="Back to home page">mozilla Localization</a></h1>
+				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore <a href="">magna aliquam...</a> </p>
+			</div>
+		</header>
+		<div id="body-content">
+			<div id="main-content">
+			{% block content %}{% endblock %}
+			</div>
+		</div>
+
+		<footer>
+			<div id="footer-background"></div>
+			<div id="footer-content">
+				<div><img src="{{ STATIC_URL }}img/logo_footer.png" alt="Mozilla"></div>
+				<p>Except where otherwise <a href="">noted</a>, content on this site is licensed under the <a href="">Creative Commons Attribution Share-Alike License v3.0</a> or any later version. </p>
+				<p class="notices"><a href="{% url privacy.views.show_policy %}">Privacy Policy</a> | <a href="">Legal Notices (XXX)</a></p>
+			</div>
+		</footer>
+		<div id="template-bottom-background"></div>
 
 <script>
 var CONFIG = {USER_URL: '{% url accounts.views.user_json %}',
@@ -82,5 +126,5 @@ var CONFIG = {USER_URL: '{% url accounts.views.user_json %}',
 <script src="{{ STATIC_URL }}js/base.js"></script>
 {% endcompress %}
 {% block javascript_matter %}{% endblock %}
-</body>
+	</body>
 </html>
