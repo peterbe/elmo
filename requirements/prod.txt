@@ -6,4 +6,4 @@ python-memcached
 django_compressor
 django-appconf
 versiontools
-
+feedparser
