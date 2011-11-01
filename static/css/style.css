@@ -192,6 +192,12 @@ body#home > header {
 		padding: 	0 0 30px 0;
 	}
 	#header-content h1 {
+			font-size: 			40px;
+			color: 				#fff;
+			font-weight: 		bold;
+			letter-spacing: 	-2px;
+			padding: 			0;
+			text-shadow: 		0 1px 5px rgba(0,0,0,0.4);
 		float: 			left;
 		margin: 		0;
 		min-width:		270px;
@@ -204,15 +210,10 @@ body#home > header {
 		#header-content h1 a:link,
 		#header-content h1 a:active,
 		#header-content h1 a:visited {
-			display: 			inline;
-			font-weight: 		bold;
-			letter-spacing: 	-2px;
-			font-size: 			40px;
 			color: 				#fff;
+			display: 			inline;
 			text-decoration: 	none;
-			padding: 			0;
-			text-shadow: 		0 1px 5px rgba(0,0,0,0.4);
-		}
+ 		}
 		#header-content h1 a:hover,
 		#header-content h1 a:focus {
 			text-decoration: 	none;
@@ -384,7 +385,7 @@ body#home > header {
 
 #main-content {
 	float: 		left;
-	width: 		732px;
+        width: 		732px;
 }
 	#main-content section {
 		clear: 			left;
