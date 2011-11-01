@@ -93,14 +93,17 @@
 		<header>
 			<div id="header-background"></div>
 			<div id="header-content">
-				<h1><a href="/" title="Back to home page">mozilla Localization</a></h1>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore <a href="">magna aliquam...</a> </p>
+				<h1>{% block header_h1 %}<a href="/" title="Back to home page">{% block header_h1_inner %}mozilla Localization{% endblock %}</a>{% endblock %}</h1>
+				{% block header_content_extra %}
+				{% endblock %}
 			</div>
 		</header>
 		<div id="body-content">
 			<div id="main-content">
 			{% block content %}{% endblock %}
 			</div>
+                        {% block aside %}{% endblock %}
+
 		</div>
 
 		<footer>
