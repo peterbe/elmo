@@ -611,24 +611,12 @@ table {
 /* }}} */
 
 
-/* Teams page */
-#teams {
-  -moz-column-width: 35ex;
-  /* tried on google chrome and safari, looks like junk, borders don't work
-   -webkit-column-width: 35ex;
-   */
-}
-#teams > li {
-  list-style-type: none;
-  border-top: 1px solid grey;
-  border-bottom: 1px solid grey;
-  margin-bottom: -1px;
-  padding: 5px;
-  margin-right: 5ex;
-}
-/* end Teams page */
 
 
 .hidden {
-  display: none;
+    display: none;
+}
+
+div.clearer {
+    clear: both; line-height: 0; height: 0;
 }

@@ -38,6 +38,12 @@
 {% endcomment %} -->
 {% load compress %}
 {% block title_matter %}Mozilla Localization Teams{% endblock %}
+{% block head_matter %}
+{% compress css %}
+<link rel="stylesheet" href="{{ STATIC_URL }}homepage/css/teams.css" type="text/css">
+{% endcompress %}
+{% endblock %}
+
 {% block javascript_matter %}
 {% compress js %}
 <script src="{{ STATIC_URL }}homepage/js/teams.js"></script>
