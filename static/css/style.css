@@ -10,6 +10,7 @@ body {
 	font: 			14px/1.4 Georgia, Times, serif;
 	min-width:		960px;
 	position:		relative;
+	height: 100%;
 }
 img {
 	border: 0;
@@ -50,7 +51,8 @@ nav,
 #body-content {
   margin-left: 	auto;
   margin-right: auto;
-  width: 		960px;
+  margin: 0 0 0 10%;
+  width: 90%;
 }
 
 body > header:after,
@@ -386,6 +388,9 @@ body#home > header {
 #main-content {
 	float: 		left;
         width: 		732px;
+	margin-bottom: -75px;  /* must be same height as the footer */
+	height: auto;
+	min-height: 100%;
 }
 	#main-content section {
 		clear: 			left;
@@ -415,11 +420,17 @@ body#home > header {
 /* }}} */
 /* {{{ Footer */
 
+.push {
+    clear: both;
+    height: 75px;
+}
+
 body > footer {
 	clear: 		both;
 	color: 		#999;
 	margin: 	105px 0 0 0;
 	position:	relative;
+	height: 75px;
 }
 	body > footer h1,
 	body > footer h2,
@@ -431,7 +442,7 @@ body > footer {
 		color:	#999;
 	}
 #footer-content {
-	padding: 		25px 0 30px 0;
+	padding: 		25px 0 0 0;
 }
 	#footer-content div,
 	#footer-content p {
@@ -459,7 +470,7 @@ body > footer {
 }
 
 #template-bottom-background {
-	background: transparent url(../img/footer-background.jpg) no-repeat left bottom;
+	background: transparent url(../img/footer-background_trans.png) no-repeat left bottom;
 	bottom:		0;
 	height: 	388px;
 	position:	absolute;
@@ -501,8 +512,9 @@ table {
 	border-collapse: 	collapse;
 	width: 				100%;
 }
+/*
 	tr {
-		background-color: 			#eee; /* fallback color if gradients are not supported */
+		background-color: 			#eee; fallback color if gradients are not supported 
 
 		background-image: 	-webkit-gradient(linear, left top, left bottom, from(white), to(#eee));
 		background-image: 	-webkit-linear-gradient(top, white, #eee);
@@ -512,6 +524,7 @@ table {
 		background-image:         	linear-gradient(top, white, #eee);
 		border-top: 				1px solid #ccc;
 	}
+*/	
 	tr.special {
 		background-color: 			#ebf4fb; /* fallback color if gradients are not supported */
 
@@ -524,8 +537,12 @@ table {
 		border-top: 				1px solid #ccc;
 	}
 		td {
+		    padding: .5em .5em 0 .5em;
+		    font-size: .9em;
+		/*
 			padding: 		10px 7px;
 			vertical-align: top;
+			*/
 		}
 			td span {
 				display: 	block;
