@@ -49,8 +49,8 @@ nav,
 #header-content,
 #footer-content,
 #body-content {
-  margin-left: 	auto;
-  margin-right: auto;
+  /*margin-left: 	auto;
+  margin-right: auto;*/
   margin: 0 0 0 10%;
   width: 90%;
 }
@@ -387,7 +387,6 @@ body#home > header {
 
 #main-content {
 	float: 		left;
-        width: 		732px;
 	margin-bottom: -75px;  /* must be same height as the footer */
 	height: auto;
 	min-height: 100%;
@@ -512,19 +511,9 @@ table {
 	border-collapse: 	collapse;
 	width: 				100%;
 }
-/*
-	tr {
-		background-color: 			#eee; fallback color if gradients are not supported 
-
-		background-image: 	-webkit-gradient(linear, left top, left bottom, from(white), to(#eee));
-		background-image: 	-webkit-linear-gradient(top, white, #eee);
-		background-image:      -moz-linear-gradient(top, white, #eee);
-		background-image:     	-ms-linear-gradient(top, white, #eee);
-		background-image:      	 -o-linear-gradient(top, white, #eee);
-		background-image:         	linear-gradient(top, white, #eee);
-		border-top: 				1px solid #ccc;
-	}
-*/	
+tr {
+border-top:                             1px solid #ccc;
+}
 	tr.special {
 		background-color: 			#ebf4fb; /* fallback color if gradients are not supported */
 
@@ -537,8 +526,8 @@ table {
 		border-top: 				1px solid #ccc;
 	}
 		td {
-		    padding: .5em .5em 0 .5em;
-		    font-size: .9em;
+		    padding:                10px 7px;
+		    vertical-align: top;
 		/*
 			padding: 		10px 7px;
 			vertical-align: top;
