@@ -109,15 +109,27 @@ def diff_app(request):
     repo_url = Repository.objects.filter(name=reponame).values_list('url', flat=True)[0]
     from mercurial.ui import ui as _ui
     from mercurial.hg import repository
+    from mercurial.copies import copies
     ui = _ui()
     repo = repository(ui, repopath)
     ctx1 = repo.changectx(request.GET['from'])
     ctx2 = repo.changectx(request.GET['to'])
+    from mercurial.node import nullid
+    moved = copies(repo, ctx1, ctx2, repo[nullid])[0]
+    print "moved"
+    print moved
     match = None # maybe get something from l10n.ini and cmdutil
     changed, added, removed = repo.status(ctx1, ctx2, match=match)[:3]
+    print "changed, added, removed"
+    print (changed, added, removed)
+    #for new_name, old_name in moved.items():
+    #    if
+    print
     paths = ([(f, 'changed') for f in changed]
              + [(f, 'removed') for f in removed]
              + [(f, 'added') for f in added])
+    print paths
+    print "\n"
     diffs = DataTree(dict)
     for path, action in paths:
         lines = []
