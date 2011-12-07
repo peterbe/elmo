@@ -142,7 +142,7 @@ margin-left: 	15px;
 line-height: 	1;
 }
 #quick-search #q {
-background: 			#fff url(search-icon.png) 2px 50% no-repeat;
+background: 			#fff url(../img/search-icon.png) 2px 50% no-repeat;
 border: 				1px solid #1e4262;
 box-shadow: 			inset 1px 1px 1px rgba(100,100,100,0.5);
 -webkit-box-shadow:	inset 1px 1px 1px rgba(100,100,100,0.5);
@@ -388,7 +388,7 @@ float: 		right;
 }
 #body-content section {
 background-color: 		white;
-background-image: 		url(aside-background.jpg);
+background-image: 		url(../img/aside-background.jpg);
 background-repeat: 		no-repeat;
 background-position: 	bottom;
 }
@@ -413,7 +413,7 @@ margin-right: 	0;
 }
 #main-content .introduction {
 background-color: 		white;
-background-image: 		url(introduction-background.jpg);
+background-image: 		url(../img/introduction-background.jpg);
 background-repeat: 		no-repeat;
 background-position: 	bottom right;
 min-width: 				679px;
