@@ -40,6 +40,10 @@
 '''
 
 import re
+import os
+import shutil
+import tempfile
+import functools
 from urlparse import urlparse
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -50,8 +54,28 @@ from l10nstats.models import Run
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.utils import simplejson as json
+from django.conf import settings
 from commons.tests.mixins import EmbedsTestCaseMixin
 from nose.tools import eq_, ok_
+from mercurial import commands as hgcommands
+from mercurial.hg import repository
+from mercurial.ui import ui as _ui
+
+
+def repository_base_wrapper(func):
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        old_repository_base = settings.REPOSITORY_BASE
+        base = settings.REPOSITORY_BASE = tempfile.mkdtemp()
+        self.repo_name = 'mozilla-central'
+        self.repo = os.path.join(base, self.repo_name)
+        try:
+            return func(self)
+        finally:
+            if os.path.isdir(base):
+                shutil.rmtree(base)
+            settings.REPOSITORY_BASE = old_repository_base
+    return wrapper
 
 
 class ShippingTestCaseBase(TestCase, EmbedsTestCaseMixin):
@@ -83,6 +107,182 @@ class ShippingTestCaseBase(TestCase, EmbedsTestCaseMixin):
         )
 
         return appver, milestone
+
+
+class ShippingDiffTestCase(ShippingTestCaseBase):
+
+    @repository_base_wrapper
+    def test_diff_app_1_file_change(self):
+        ui = _ui()
+        hgcommands.init(ui, self.repo)
+        hgrepo = repository(ui, self.repo)
+        (open(hgrepo.pathto('file.dtd'), 'w')
+             .write('''
+             <!ENTITY key1 "Hello">
+             <!ENTITY key2 "Cruel">
+             '''))
+        hgcommands.addremove(ui, hgrepo)
+        hgcommands.commit(ui, hgrepo,
+                  user="Jane Doe <jdoe@foo.tld>",
+                  message="initial commit")
+        rev0 = hgrepo[0].hex()
+        (open(hgrepo.pathto('file.dtd'), 'w')
+             .write('''
+             <!ENTITY key1 "Hello">
+             <!ENTITY key2 "Cruel">
+             <!ENTITY key3 "World">
+             '''))
+        hgcommands.commit(ui, hgrepo,
+                  user="Jane Doe <jdoe@foo.tld>",
+                  message="Second commit")
+        rev1 = hgrepo[1].hex()
+
+        Repository.objects.create(
+          name=self.repo_name,
+          url='http://localhost:8001/' + self.repo_name
+        )
+
+        url = reverse('shipping.views.diff_app')
+        response = self.client.get(url, {
+          'repo': self.repo_name,
+          'from': rev0,
+          'to': rev1
+        })
+        eq_(response.status_code, 200)
+        html_diff = response.content.split('Changed files:')[1]
+        ok_(re.findall('>\s*file\.dtd\s*<', html_diff))
+        ok_('<tr class="line-added">' in html_diff)
+        ok_(re.findall('>\s*key3\s*<', html_diff))
+        ok_(re.findall('>\s*World\s*<', html_diff))
+        ok_(not re.findall('>\s*Cruel\s*<', html_diff))
+
+    @repository_base_wrapper
+    def test_diff_app_2_file_only_renamed(self):
+        ui = _ui()
+        hgcommands.init(ui, self.repo)
+        hgrepo = repository(ui, self.repo)
+        (open(hgrepo.pathto('file.dtd'), 'w')
+             .write('''
+             <!ENTITY key1 "Hello">
+             <!ENTITY key2 "Cruel">
+             '''))
+        hgcommands.addremove(ui, hgrepo)
+        hgcommands.commit(ui, hgrepo,
+                  user="Jane Doe <jdoe@foo.tld>",
+                  message="initial commit")
+        rev0 = hgrepo[0].hex()
+
+        hgcommands.rename(ui, hgrepo,
+                          hgrepo.pathto('file.dtd'),
+                          hgrepo.pathto('newnamefile.dtd'))
+        hgcommands.commit(ui, hgrepo,
+                  user="Jane Doe <jdoe@foo.tld>",
+                  message="Second commit")
+        rev1 = hgrepo[1].hex()
+
+        Repository.objects.create(
+          name=self.repo_name,
+          url='http://localhost:8001/' + self.repo_name
+        )
+
+        url = reverse('shipping.views.diff_app')
+        response = self.client.get(url, {
+          'repo': self.repo_name,
+          'from': rev0,
+          'to': rev1
+        })
+        eq_(response.status_code, 200)
+        html_diff = response.content.split('Changed files:')[1]
+        ok_('renamed from file.dtd' in re.sub('<.*?>', '', html_diff))
+        ok_(re.findall('>\s*newnamefile\.dtd\s*<', html_diff))
+        ok_(not re.findall('>\s*Hello\s*<', html_diff))
+
+    @repository_base_wrapper
+    def test_diff_app_3_file_renamed_and_edited(self):
+        ui = _ui()
+        hgcommands.init(ui, self.repo)
+        hgrepo = repository(ui, self.repo)
+        (open(hgrepo.pathto('file.dtd'), 'w')
+             .write('''
+             <!ENTITY key1 "Hello">
+             <!ENTITY key2 "Cruel">
+             '''))
+        hgcommands.addremove(ui, hgrepo)
+        hgcommands.commit(ui, hgrepo,
+                  user="Jane Doe <jdoe@foo.tld>",
+                  message="initial commit")
+        rev0 = hgrepo[0].hex()
+
+        hgcommands.rename(ui, hgrepo,
+                          hgrepo.pathto('file.dtd'),
+                          hgrepo.pathto('newnamefile.dtd'))
+        (open(hgrepo.pathto('newnamefile.dtd'), 'w')
+             .write('''
+             <!ENTITY key1 "Hello">
+             <!ENTITY key2 "Cruel">
+             <!ENTITY key3 "World">
+             '''))
+        hgcommands.commit(ui, hgrepo,
+                  user="Jane Doe <jdoe@foo.tld>",
+                  message="Second commit")
+        rev1 = hgrepo[1].hex()
+
+        Repository.objects.create(
+          name=self.repo_name,
+          url='http://localhost:8001/' + self.repo_name
+        )
+
+        url = reverse('shipping.views.diff_app')
+        response = self.client.get(url, {
+          'repo': self.repo_name,
+          'from': rev0,
+          'to': rev1
+        })
+        eq_(response.status_code, 200)
+        html_diff = response.content.split('Changed files:')[1]
+        ok_('renamed from file.dtd' in re.sub('<.*?>', '', html_diff))
+        ok_(re.findall('>\s*newnamefile\.dtd\s*<', html_diff))
+        ok_(not re.findall('>\s*Hello\s*<', html_diff))
+        ok_(not re.findall('>\s*Cruel\s*<', html_diff))
+        ok_(re.findall('>\s*World\s*<', html_diff))
+
+    @repository_base_wrapper
+    def test_diff_app_error_handling(self):
+        url = reverse('shipping.views.diff_app')
+        response = self.client.get(url, {})
+        eq_(response.status_code, 400)
+        response = self.client.get(url, {'repo': 'junk'})
+        eq_(response.status_code, 404)
+
+        ui = _ui()
+        hgcommands.init(ui, self.repo)
+        hgrepo = repository(ui, self.repo)
+        (open(hgrepo.pathto('file.dtd'), 'w')
+             .write('''
+             <!ENTITY key1 "Hello">
+             <!ENTITY key2 "Cruel">
+             '''))
+        hgcommands.addremove(ui, hgrepo)
+        hgcommands.commit(ui, hgrepo,
+                  user="Jane Doe <jdoe@foo.tld>",
+                  message="initial commit")
+        rev0 = hgrepo[0].hex()
+
+        Repository.objects.create(
+          name=self.repo_name,
+          url='http://localhost:8001/' + self.repo_name
+        )
+
+        # missing 'from' and 'to'
+        response = self.client.get(url, {'repo': self.repo_name})
+        eq_(response.status_code, 400)
+
+        # missing 'to'
+        response = self.client.get(url, {
+          'repo': self.repo_name,
+          'from': rev0
+        })
+        eq_(response.status_code, 400)
 
 
 class ShippingTestCase(ShippingTestCaseBase):
