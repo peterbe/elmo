@@ -60,7 +60,7 @@
 </head>
 
 <body {% block body_tag %}{% endblock %}>
-
+<div id="wrapper">
 		<nav>
 			<!-- Not implemented yet
 			<form id="quick-search" action="http://www.google.com/cse" title="Search Mozilla sites">
@@ -103,12 +103,10 @@
 			</div>
                         {% block aside %}{% endblock %}
 
-                        <div class="clearer">&nbsp;</div>
-			
-			<!-- added for sticky footer -->
-			<div class="push"></div>
-		</div>
 
+			
+		</div>
+</div>
 		<footer>
 			<div id="footer-background"></div>
 			<div id="footer-content">
@@ -116,8 +114,8 @@
 				<p>Except where otherwise <a href="">noted</a>, content on this site is licensed under the <a href="">Creative Commons Attribution Share-Alike License v3.0</a> or any later version. </p>
 				<p class="notices"><a href="{% url privacy.views.show_policy %}">Privacy Policy</a> | <a href="">Legal Notices (XXX)</a></p>
 			</div>
+            <div id="template-bottom-background"></div>
 		</footer>
-		<div id="template-bottom-background"></div>
 
 <script>
 var CONFIG = {USER_URL: '{% url accounts.views.user_json %}',
