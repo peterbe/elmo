@@ -1,2 +1,3 @@
 coverage
 mock
+-e git+git://github.com/jbalogh/check.git#egg=check.py
