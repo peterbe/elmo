@@ -298,7 +298,7 @@ STATICFILES_FINDERS = (
 )
 
 ## Feeds
-L10N_FEED_URL = 'http://planet.mozilla.org/l10n/atom.xml'#'http://planet.mozilla.org/rss20.xml'
+L10N_FEED_URL = 'http://planet.mozilla.org/l10n/atom.xml'
 
 try:
     import ldap_settings
