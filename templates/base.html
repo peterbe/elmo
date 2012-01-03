@@ -62,24 +62,14 @@
 <body {% block body_tag %}{% endblock %}>
 <div id="wrapper">
 		<nav>
-			<!-- Not implemented yet
-			<form id="quick-search" action="http://www.google.com/cse" title="Search Mozilla sites">
-				<input type="hidden" name="cx" value="002443141534113389537:ysdmevkkknw">
-				<input type="hidden" name="cof" value="FORID:0">
-				<input type="search" name="q" id="q" placeholder="Search"><input type="image" src="images/search-submit.png" alt="Search" id="quick-search-btn">
-			</form>
-			-->
 
 			<div id="auth">
 				{% include "accounts/user_forms.html" %}
 				<noscript>Not logged in</noscript>
-<!--				<a href="homepage-login.html">Sign in</a> |
-				<a href="">Register</a>-->
 			</div>
 
 
 			<ul>
-				<!--<li><a href="/" class="homepage-link">Mozilla Localization</a></li>-->
 				<li><a href="{% url homepage.views.index %}" class="homepage-link">Home</a></li>
 				<li><a href="{% url homepage.views.teams %}">Teams</a></li>
 				<li><a href="https://wiki.mozilla.org/L10n">Documentation</a></li>
