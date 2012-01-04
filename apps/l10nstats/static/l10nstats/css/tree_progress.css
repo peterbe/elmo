@@ -53,3 +53,12 @@
     font-size: small;
 }
 td:nth-child(even) { background-color: #E6E6E6; }
+
+.legend {
+    float: none !important;
+    margin-top: 10px;
+}
+#histogram {
+    margin-bottom: 20px;
+    height: auto !important;
+}
