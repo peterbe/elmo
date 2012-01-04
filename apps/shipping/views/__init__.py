@@ -162,12 +162,12 @@ def diff_app(request):
         if action == 'added':
             if path in moved:
                 if moved[path] in _broken_paths:
-                    data = ''
+                    a_entities, a_map = [], {}
                 else:
                     data = ctx1.filectx(moved[path]).data()
                     data = _universal_newlines(data)
-                p.readContents(data)
-                a_entities, a_map = p.parse()
+                    p.readContents(data)
+                    a_entities, a_map = p.parse()
 
             elif path in copied:
                 data = ctx1.filectx(copied[path]).data()
@@ -207,8 +207,7 @@ def diff_app(request):
                 continue
 
         if action == 'removed':
-            c_entities = []
-            c_map = {}
+            c_entities, c_map = [], {}
             if path in moved.values():
                 continue
         else:

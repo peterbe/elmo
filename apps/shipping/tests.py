@@ -77,7 +77,7 @@ class _ui(hg_ui):
 def repository_base_wrapper(func):
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
-        old_repository_base = settings.REPOSITORY_BASE
+        old_repository_base = getattr(settings, 'REPOSITORY_BASE', None)
         base = settings.REPOSITORY_BASE = tempfile.mkdtemp()
         self.repo_name = 'mozilla-central'
         self.repo = os.path.join(base, self.repo_name)
@@ -86,7 +86,8 @@ def repository_base_wrapper(func):
         finally:
             if os.path.isdir(base):
                 shutil.rmtree(base)
-            settings.REPOSITORY_BASE = old_repository_base
+            if old_repository_base is not None:
+                settings.REPOSITORY_BASE = old_repository_base
     return wrapper
 
 
@@ -120,10 +121,25 @@ class ShippingTestCaseBase(TestCase, EmbedsTestCaseMixin):
 
         return appver, milestone
 
+
 class ShippingDiffTestCase(ShippingTestCaseBase):
 
-    @repository_base_wrapper
+    def setUp(self):
+        super(ShippingTestCaseBase, self).setUp()
+        self._old_repository_base = getattr(settings, 'REPOSITORY_BASE', None)
+        self._base = settings.REPOSITORY_BASE = tempfile.mkdtemp()
+        self.repo_name = 'mozilla-central'
+        self.repo = os.path.join(self._base, self.repo_name)
+
+    def tearDown(self):
+        super(ShippingTestCaseBase, self).tearDown()
+        if os.path.isdir(self._base):
+            shutil.rmtree(self._base)
+        if self._old_repository_base is not None:
+            settings.REPOSITORY_BASE = self._old_repository_base
+
     def test_diff_app_file_change_addition(self):
+        """Change one file by adding a new line to it"""
         ui = _ui()
 
         hgcommands.init(ui, self.repo)
@@ -169,8 +185,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(re.findall('>\s*World\s*<', html_diff))
         ok_(not re.findall('>\s*Cruel\s*<', html_diff))
 
-    @repository_base_wrapper
     def test_diff_app_file_change_modification(self):
+        """Change one file by editing an existing line"""
         ui = _ui()
 
         hgcommands.init(ui, self.repo)
@@ -214,8 +230,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_('<span class="equal">Cruel</span><span class="insert">le</span>'
             in html_diff)
 
-    @repository_base_wrapper
     def test_diff_app_file_change_removal(self):
+        """same file is changed. The change is a removal of a line"""
         ui = _ui()
 
         hgcommands.init(ui, self.repo)
@@ -258,8 +274,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(re.findall('>\s*key2\s*<', html_diff))
         ok_(re.findall('>\s*Cruel\s*<', html_diff))
 
-    @repository_base_wrapper
     def test_diff_app_new_file_change(self):
+        """Change by adding a new second file"""
         ui = _ui()
 
         hgcommands.init(ui, self.repo)
@@ -304,8 +320,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(re.findall('>\s*Monde\s*<', html_diff))
         ok_(not re.findall('>\s*Hello\s*<', html_diff))
 
-    @repository_base_wrapper
     def test_diff_app_file_only_renamed(self):
+        """Change by doing a rename without any content editing"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
@@ -345,9 +361,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(re.findall('>\s*newnamefile\.dtd\s*<', html_diff))
         ok_(not re.findall('>\s*Hello\s*<', html_diff))
 
-
-    @repository_base_wrapper
     def test_diff_app_file_renamed_and_edited(self):
+        """Change by doing a rename with content editing"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
@@ -395,8 +410,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(not re.findall('>\s*Cruel\s*<', html_diff))
         ok_(re.findall('>\s*World\s*<', html_diff))
 
-    @repository_base_wrapper
     def test_diff_app_file_renamed_and_edited_broken(self):
+        """Change by doing a rename with bad content editing"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
@@ -444,10 +459,11 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(re.findall('>\s*newnamefile\.dtd\s*<', html_diff))
         ok_('Cannot parse file' in html_diff)
 
-    @repository_base_wrapper
     def test_diff_app_file_renamed_and_edited_original_broken(self):
+        """Change by doing a rename on a previously broken file"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
+
         hgrepo = repository(ui, self.repo)
         (codecs.open(hgrepo.pathto('file.dtd'), 'w', 'latin1')
              .write(u'''
@@ -496,10 +512,11 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_('>key1<' in html_diff)
         ok_('>key2<' in html_diff)
 
-    @repository_base_wrapper
     def test_diff_app_file_copied_and_edited_original_broken(self):
+        """Change by copying a broken file"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
+
         hgrepo = repository(ui, self.repo)
         (codecs.open(hgrepo.pathto('file.dtd'), 'w', 'latin1')
              .write(u'''
@@ -545,17 +562,18 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_('Cannot parse file' in html_diff)
         eq_(html_diff.count('Cannot parse file'), 1)
 
-
-    @repository_base_wrapper
     def test_diff_app_error_handling(self):
+        """Test various bad request parameters to the diff_app
+        and assure that it responds with the right error codes."""
+        ui = _ui()
+        hgcommands.init(ui, self.repo)
+
         url = reverse('shipping.views.diff_app')
         response = self.client.get(url, {})
         eq_(response.status_code, 400)
         response = self.client.get(url, {'repo': 'junk'})
         eq_(response.status_code, 404)
 
-        ui = _ui()
-        hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
         (open(hgrepo.pathto('file.dtd'), 'w')
              .write('''
@@ -584,10 +602,11 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         })
         eq_(response.status_code, 400)
 
-    @repository_base_wrapper
     def test_diff_app_file_only_copied(self):
+        """Change by copying a file with no content editing"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
+
         hgrepo = repository(ui, self.repo)
         (open(hgrepo.pathto('file.dtd'), 'w')
              .write('''
@@ -625,8 +644,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(not re.findall('>\s*Hello\s*<', html_diff))
         ok_(not re.findall('>\s*Cruel\s*<', html_diff))
 
-    @repository_base_wrapper
-    def test_diff_app_file_only_copied_and_edited(self):
+    def test_diff_app_file_copied_and_edited(self):
+        """Change by copying a file and then content editing"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
@@ -673,8 +692,9 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         ok_(re.findall('>\s*Cruel\s*<', html_diff))
         ok_(re.findall('>\s*World\s*<', html_diff))
 
-    @repository_base_wrapper
     def test_diff_base_against_clone(self):
+        """Test that the right error is raised on trying to do a diff across
+        a different divergant clone"""
         ui = _ui()
         orig = os.path.join(settings.REPOSITORY_BASE, 'orig')
         clone = os.path.join(settings.REPOSITORY_BASE, 'clone')
@@ -734,8 +754,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
                                 'from': rev_from[:12],
                                 'to': rev_to[:12]})
 
-    @repository_base_wrapper
     def test_diff_app_binary_file_change(self):
+        """Change is addition of a binary file"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
@@ -775,9 +795,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         change_url = repo_url + 'file/%s/file.gif' % rev0
         ok_('href="%s"' % change_url in html_diff)
 
-
-    @repository_base_wrapper
     def test_diff_app_broken_encoding_file_add(self):
+        """Change by editing an already broken file"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
@@ -820,9 +839,8 @@ class ShippingDiffTestCase(ShippingTestCaseBase):
         change_url = repo_url + 'file/%s/file.dtd' % rev1
         ok_('href="%s"' % change_url in html_diff)
 
-
-    @repository_base_wrapper
     def test_diff_app_broken_encoding_file_change(self):
+        """Change by editing a good with with a broken edit"""
         ui = _ui()
         hgcommands.init(ui, self.repo)
         hgrepo = repository(ui, self.repo)
