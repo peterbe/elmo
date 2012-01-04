@@ -44,6 +44,13 @@
 {% endcompress %}
 {% endblock %}
 
+{% block head_matter %}
+{% compress css %}
+<link rel="stylesheet" href="{{ STATIC_URL }}shipping/css/dashboard.css" type="text/css">
+<link rel="stylesheet" href="{{ STATIC_URL }}shipping/css/snippet.css" type="text/css">
+{% endcompress %}
+{% endblock %}
+
 {% block header_h1 %}
 Mozilla Localization Team {{ locale.name }}
 <span class="lang">({{ locale.code }})</span>
