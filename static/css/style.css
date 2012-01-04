@@ -334,6 +334,7 @@ body#home > header {
 #body-content {
     overflow: auto;
     padding: 2px 0 75px 2px;
+    width: 1055px;
 }
 
 #body-content h1 {
@@ -617,3 +618,11 @@ td.checked {
     display: none;
 }
 
+.legend {
+    float: none !important;
+    margin-top: 10px;
+}
+#histogram {
+    margin-bottom: 20px;
+    height: auto !important;
+}
