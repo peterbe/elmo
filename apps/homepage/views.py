@@ -83,7 +83,7 @@ def index(request):
     split = 6
     locales = Locale.objects.filter(name__isnull=False).order_by('name')
 
-    feed_items = get_feed_items(5)
+    feed_items = get_feed_items()
 
     options = {
       'feed_items': feed_items,
@@ -93,13 +93,17 @@ def index(request):
     }
     return render(request, 'homepage/index.html', options)
 
-def get_feed_items(max_count):
+
+def get_feed_items(max_count=settings.HOMEPAGE_FEED_SIZE,
+                   force_refresh=False):
     cache_key = 'feed_items:%s' % max_count
-    items = cache.get(cache_key, None)
-    if items is not None:
-        return items
+    if not force_refresh:
+        items = cache.get(cache_key, None)
+        if items is not None:
+            return items
 
     parsed = feedparser.parse(settings.L10N_FEED_URL)
+
     items = []
     for item in parsed.entries:
         url = item['link']
@@ -111,6 +115,7 @@ def get_feed_items(max_count):
 
     cache.set(cache_key, items, 60 * 60)
     return items
+
 
 def teams(request):
     locs = Locale.objects.all().order_by('name')
