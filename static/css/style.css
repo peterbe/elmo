@@ -336,7 +336,9 @@ body#home > header {
     padding: 2px 0 75px 2px;
     width: 1055px;
 }
-
+#home #body-content {
+    width: 960px;
+}
 #body-content h1 {
     font-size: 1.5em;
 }
