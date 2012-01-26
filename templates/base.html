@@ -80,12 +80,9 @@
 		</nav>
 
 		<header>
-			<div id="header-background"></div>
-			<div id="header-content">
-				<h1>{% block header_h1 %}<a href="/" title="Back to home page">{% block header_h1_inner %}mozilla Localization{% endblock %}</a>{% endblock %}</h1>
-				{% block header_content_extra %}
-				{% endblock %}
-			</div>
+			<h1>{% block header_h1 %}<a href="/" title="Back to home page">{% block header_h1_inner %}mozilla Localization{% endblock %}</a>{% endblock %}</h1>
+            {% block header_content_extra %}
+            {% endblock %}
 		</header>
 		<div id="body-content" class="{% block body_content_class %}page-standard{% endblock %}">
 			<div id="main-content">
