@@ -50,16 +50,12 @@ nav a,
 
 /*  960.gs */
 
-nav,
-#header-content,
 #footer-content,
 #body-content {
     margin-left: auto;
     margin-right: auto;
-    width: 960px;
 }
 body > header:after,
-#header-content:after,
 #footer-content:after {
     clear: both;
     content: " ";
@@ -71,9 +67,11 @@ body > header:after,
 }
 
 /* Header */
-
 nav {
+    float: right;
     padding: 15px 0;
+    min-width: 1100px;
+    width: 90%;
 }
 nav div {
     float: right;
@@ -164,78 +162,51 @@ nav .error:before {
     left: -16px;
     z-index: 1;
 }
-
-#wrapper > header {
-    color: #999;
-    margin-bottom: 40px;
-    padding: 0;
-    position: relative;
-}
 body#home > header {
     height: auto;
 }
-#header-background {
-    background: #2a2a2a;
-    background: rgba(38,38,38,0.98);
+
+/* new header */
+header {
+    clear: right;
+    float: right;
+    position: relative;
+    background-color: #2a2a2a;
+    background-color: rgba(38,38,38,0.9);
+    color: #999;
+    margin-bottom: 40px;
+    padding: 10px 0 25px 25px;
     border-bottom: 10px solid #a5151e;
-    height: 100%;
-    margin: 0 0 15px 0;
-    position: absolute;
-    right: 0;
-    width: 85%;
+    width: 90%;
     min-width: 1100px;
+    height: 65px;
     z-index: -1;
 }
-#header-content {
-    height: 100%;
-    padding: 20px 0 0 0;
-    position: relative;
-}
-#header-content p {
-    clear: both;
-    max-width: 460px;
-    padding: 0 0 30px 0;
-}
-#header-content h1 {
+header h1 {
     font-size: 40px;
     color: #fff;
     font-weight: bold;
     letter-spacing: -2px;
     padding: 0;
     text-shadow: 0 1px 5px rgba(0,0,0,0.4);
-    float: left;
     margin: 0;
     min-width: 270px;
     z-index: 2;
 }
-#home #header-content h1 {
-    width: auto;
-}
-#header-content h1 a,
-#header-content h1 a:link,
-#header-content h1 a:active,
-#header-content h1 a:visited {
+header h1 a,
+header h1 a:link,
+header h1 a:active,
+header h1 a:visited {
     color: #fff;
     display: inline;
     text-decoration: none;
 }
-#header-content h1 a:hover,
-#header-content h1 a:focus {
+header h1 a:hover,
+header h1 a:focus {
     text-decoration: none;
     color: #eee;
     text-shadow: 0 1px 5px rgba(0,0,0,0.4),
     0 0 10px rgba(255,255,255,0.4);
-}
-#header-content h1 img {
-    vertical-align: middle;
-}
-#header-content h1 span {
-    color: gray;
-    font-size: 0.8em;
-}
-#header-content > div {
-    float: left;
-    padding-right: 160px;
 }
 
 #header-nav {
@@ -332,11 +303,10 @@ body#home > header {
 
 /* Content */
 #body-content {
+    clear: both;
     overflow: auto;
     padding: 2px 0 75px 2px;
-    width: 1055px;
 }
-
 #body-content h1 {
     font-size: 1.5em;
 }
@@ -365,6 +335,7 @@ body#home > header {
     -moz-box-shadow: 1px 1px 4px #999;
     -webkit-box-shadow: 1px 1px 4px #999;
     padding: 10px 15px;
+    overflow: auto;
 }
 
 #body-content aside {
@@ -374,15 +345,15 @@ body#home > header {
 #body-content aside .date {
     color: #666;
 }
-#body-content aside header {
+#body-content aside h1 {
     border-bottom: 1px solid #ccc;
     padding-bottom: 15px;
     margin-bottom: 20px;
 }
-#body-content aside header h1 {
+#body-content aside h1 {
     font-size: 1.3em;
 }
-#body-content aside header a {
+#body-content aside a {
     float: right;
 }
 #body-content section {
@@ -449,6 +420,7 @@ body > footer p {
 }
 #footer-content {
     padding: 25px 0 0 0;
+    width: 75%;
 }
 #footer-content div,
 #footer-content p {
@@ -562,14 +534,20 @@ td.checked {
 .gray-bullet {
     background-color: #ccc;
 }
-
+.blog-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.blog-links li a {
+    margin-bottom: .5em;
+}
 /* Media Queries */
 
 /* Fixing the header's and footer's background scaling problem */
 @media (min-width: 1000px) and (max-width: 1500px) {
 
-    #footer-background,
-    #header-background {
+    #footer-background {
         width: 90%;
     }
 
@@ -583,14 +561,11 @@ td.checked {
     body {
         min-width: 100%;
     }
-    body > *,
-    #header-content {
+    body > * {
         padding-left: 5px;
         padding-right: 5px;
     }
-
-    nav,
-    #header-content,
+    
     #footer-content,
     #body-content,
     #body-content aside,
@@ -616,4 +591,11 @@ td.checked {
 
 .hidden {
     display: none;
+}
+.page-standard {
+    width: 960px;
+}
+.page-wider,
+.page-dashboard {
+    width: 1030px;
 }

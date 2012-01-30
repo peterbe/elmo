@@ -106,13 +106,14 @@
 <div>
 <aside>
 	<section>
-		<header>
-			<a href=""><img src="{{ STATIC_URL }}img/icons/feed.png" alt="" /></a>
-			<h1>Mozilla L10n Blog</h1>
-		</header>
-                {% for item in feed_items %}
-		<p><a href="{{ item.url }}">{{ item.title|truncatewords:8 }}</a></p>
-                {% endfor %}
+		<h1>
+			<a href="XXXINSERT FEED URL HERE"><img src="{{ STATIC_URL }}img/icons/feed.png" alt="Subscribe to our feed" /></a>Mozilla L10n Blog
+		</h1>
+		<ul class="blog-links">
+            {% for item in feed_items %}
+		    <li><a href="{{ item.url }}">{{ item.title|truncatewords:8 }}</a></li>
+            {% endfor %}
+         </ul>
 	</section>
 	{% comment %}
 	<section>
