@@ -50,7 +50,6 @@ nav a,
 
 /*  960.gs */
 
-nav,
 #footer-content,
 #body-content {
     margin-left: auto;
@@ -68,9 +67,11 @@ body > header:after,
 }
 
 /* Header */
-
 nav {
+    float: right;
     padding: 15px 0;
+    min-width: 1100px;
+    width: 90%;
 }
 nav div {
     float: right;
@@ -167,6 +168,7 @@ body#home > header {
 
 /* new header */
 header {
+    clear: right;
     float: right;
     position: relative;
     background-color: #2a2a2a;
@@ -301,6 +303,7 @@ header h1 a:focus {
 
 /* Content */
 #body-content {
+    clear: both;
     overflow: auto;
     padding: 2px 0 75px 2px;
 }
@@ -417,6 +420,7 @@ body > footer p {
 }
 #footer-content {
     padding: 25px 0 0 0;
+    width: 75%;
 }
 #footer-content div,
 #footer-content p {
@@ -561,8 +565,7 @@ td.checked {
         padding-left: 5px;
         padding-right: 5px;
     }
-
-    nav,
+    
     #footer-content,
     #body-content,
     #body-content aside,
