@@ -55,7 +55,6 @@ nav,
 #body-content {
     margin-left: auto;
     margin-right: auto;
-    width: 960px;
 }
 body > header:after,
 #footer-content:after {
@@ -304,7 +303,6 @@ header h1 a:focus {
 #body-content {
     overflow: auto;
     padding: 2px 0 75px 2px;
-    width: 960px;
 }
 #body-content h1 {
     font-size: 1.5em;
@@ -590,4 +588,11 @@ td.checked {
 
 .hidden {
     display: none;
+}
+.page-standard {
+    width: 960px;
+}
+.page-wider,
+.page-dashboard {
+    width: 1030px;
 }
