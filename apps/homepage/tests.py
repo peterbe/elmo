@@ -244,11 +244,14 @@ class HomepageTestCase(TestCase, EmbedsTestCaseMixin):
         entries = list(parsed.entries)
         first = entries[0]
 
-        ok_(first['title'] in content)
+        # because the titles are truncated in the template
+        # we need to do the same here
+        from django.template.defaultfilters import truncatewords
+        ok_(truncatewords(first['title'], 8) in content)
         ok_('href="%s"' % first['link'] in content)
 
         second = parsed.entries[1]
-        ok_(second['title'] in content)
+        ok_(truncatewords(second['title'], 8) in content)
         ok_('href="%s"' % second['link'] in content)
 
     def test_teams_page(self):
