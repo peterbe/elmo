@@ -353,7 +353,7 @@ header h1 a:focus {
 #body-content aside h1 {
     font-size: 1.3em;
 }
-#body-content aside a {
+#body-content aside a.rss-icon {
     float: right;
 }
 #body-content section {
@@ -539,13 +539,18 @@ td.checked {
     padding: 0;
     list-style: none;
 }
-.blog-links li a {
+.blog-links li {
     margin-bottom: .5em;
 }
 /* Media Queries */
 
 /* Fixing the header's and footer's background scaling problem */
-@media (min-width: 1000px) and (max-width: 1500px) {
+@media (min-width: 960px) and (max-width: 1500px) {
+    
+    nav,
+    header {
+        min-width: 90%;
+    }
 
     #footer-background {
         width: 90%;
@@ -564,6 +569,11 @@ td.checked {
     body > * {
         padding-left: 5px;
         padding-right: 5px;
+    }
+    
+    nav,
+    header {
+        min-width: 97%;
     }
     
     #footer-content,
@@ -595,7 +605,6 @@ td.checked {
 .page-standard {
     width: 960px;
 }
-.page-wider,
-.page-dashboard {
+.page-wider {
     width: 1030px;
 }
