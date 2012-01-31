@@ -545,7 +545,12 @@ td.checked {
 /* Media Queries */
 
 /* Fixing the header's and footer's background scaling problem */
-@media (min-width: 1000px) and (max-width: 1500px) {
+@media (min-width: 960px) and (max-width: 1500px) {
+    
+    nav,
+    header {
+        min-width: 97%;
+    }
 
     #footer-background {
         width: 90%;
@@ -564,6 +569,11 @@ td.checked {
     body > * {
         padding-left: 5px;
         padding-right: 5px;
+    }
+    
+    nav,
+    header {
+        min-width: 97%;
     }
     
     #footer-content,
