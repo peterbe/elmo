@@ -369,6 +369,12 @@ header h1 a:focus {
     min-height: 100%;
     margin-right: 10px;
 }
+/* forces override of the above float in order to allow 
+ * content to use the full available width 
+ */
+.full-width {
+    float: none !important;
+}
 #main-content section {
     clear: left;
 }
@@ -546,11 +552,6 @@ td.checked {
 
 /* Fixing the header's and footer's background scaling problem */
 @media (min-width: 960px) and (max-width: 1500px) {
-    
-    nav,
-    header {
-        min-width: 90%;
-    }
 
     #footer-background {
         width: 90%;
