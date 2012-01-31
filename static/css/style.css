@@ -549,7 +549,7 @@ td.checked {
     
     nav,
     header {
-        min-width: 97%;
+        min-width: 90%;
     }
 
     #footer-background {
@@ -605,7 +605,6 @@ td.checked {
 .page-standard {
     width: 960px;
 }
-.page-wider,
-.page-dashboard {
+.page-wider {
     width: 1030px;
 }
