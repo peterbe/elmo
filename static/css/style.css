@@ -353,7 +353,7 @@ header h1 a:focus {
 #body-content aside h1 {
     font-size: 1.3em;
 }
-#body-content aside a {
+#body-content aside a.rss-icon {
     float: right;
 }
 #body-content section {
@@ -539,7 +539,7 @@ td.checked {
     padding: 0;
     list-style: none;
 }
-.blog-links li a {
+.blog-links li {
     margin-bottom: .5em;
 }
 /* Media Queries */
