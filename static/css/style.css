@@ -364,16 +364,9 @@ header h1 a:focus {
 }
 
 #main-content {
-    float: left;
     height: auto;
     min-height: 100%;
     margin-right: 10px;
-}
-/* forces override of the above float in order to allow 
- * content to use the full available width 
- */
-.full-width {
-    float: none !important;
 }
 #main-content section {
     clear: left;
@@ -461,7 +454,13 @@ body > footer p {
     width: 100%;
     z-index: -2;
 }
-
+/*
+ * utility class, mostly used when one needs to float the 
+ * main-content container to the left.
+ */
+.left-floated-container {
+    float: left;
+}
 /* Team and Product overview pages */
 
 .team-intro-table p {
