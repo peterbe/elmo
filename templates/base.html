@@ -85,7 +85,7 @@
             {% endblock %}
 		</header>
 		<div id="body-content" class="{% block body_content_class %}page-standard{% endblock %}">
-			<div id="main-content">
+			<div id="main-content" class="{% block main_content_class %}{% endblock %}">
 			{% block content %}{% endblock %}
 			</div>
                         {% block aside %}{% endblock %}
