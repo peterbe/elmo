@@ -52,7 +52,7 @@ nav a,
 
 #footer-content,
 #body-content {
-    margin-left: auto;
+    margin-left: 13%;
     margin-right: auto;
 }
 body > header:after,
@@ -70,7 +70,6 @@ body > header:after,
 nav {
     float: right;
     padding: 15px 0;
-    min-width: 1100px;
     width: 90%;
 }
 nav div {
@@ -178,7 +177,6 @@ header {
     padding: 10px 0 25px 25px;
     border-bottom: 10px solid #a5151e;
     width: 90%;
-    min-width: 1100px;
     height: 65px;
     z-index: -1;
 }
@@ -569,11 +567,6 @@ td.checked {
     body > * {
         padding-left: 5px;
         padding-right: 5px;
-    }
-    
-    nav,
-    header {
-        min-width: 97%;
     }
     
     #footer-content,
