@@ -16,6 +16,8 @@ body {
     height: 100%;
 }
 #wrapper {
+    background: url("../img/footer-background_trans.png") no-repeat scroll left bottom transparent;
+    position: relative;
     min-height: 100%;
 }
 img {
@@ -49,14 +51,11 @@ nav a,
 }
 
 /*  960.gs */
-
-#footer-content,
 #body-content {
-    margin-left: auto;
+    margin-left: 10%;
     margin-right: auto;
 }
-body > header:after,
-#footer-content:after {
+body > header:after {
     clear: both;
     content: " ";
     display: block;
@@ -70,7 +69,6 @@ body > header:after,
 nav {
     float: right;
     padding: 15px 0;
-    min-width: 1100px;
     width: 90%;
 }
 nav div {
@@ -178,9 +176,7 @@ header {
     padding: 10px 0 25px 25px;
     border-bottom: 10px solid #a5151e;
     width: 90%;
-    min-width: 1100px;
     height: 65px;
-    z-index: -1;
 }
 header h1 {
     font-size: 40px;
@@ -305,7 +301,7 @@ header h1 a:focus {
 #body-content {
     clear: both;
     overflow: auto;
-    padding: 2px 0 75px 2px;
+    padding: 2px 0 85px 2px;
 }
 #body-content h1 {
     font-size: 1.5em;
@@ -403,10 +399,15 @@ header h1 a:focus {
 }
 body > footer {
     clear: both;
-    color: #999;
-    margin: -75px 0 0 0;
     position: relative;
-    height: 75px;;
+    float: right;
+    background-color: #2a2a2a;
+    background-color: rgb(38,38,38);
+    color: #999;
+    margin: -85px 0 0 0;
+    padding: 10px 25px 0 0;
+    width: 90%;
+    height: 75px;
 }
 body > footer h1,
 body > footer h2,
@@ -417,42 +418,16 @@ body > footer h6,
 body > footer p {
     color: #999;
 }
-#footer-content {
-    padding: 25px 0 0 0;
-    width: 75%;
-}
-#footer-content div,
-#footer-content p {
+footer p {
     float: left;
+    margin: 15px 0 0 15px;
     max-width: 480px;
 }
-#footer-content img {
+footer img {
     width: 50px;
 }
-#footer-content p {
-    margin-left: 15px;
-}
-#footer-content .notices {
+footer .notices {
     float: right;
-}
-#footer-background {
-    background: #2a2a2a;
-    height: 100%;
-    margin: 0 0 0 15%;
-    position: absolute;
-    right: 0;
-    width: 85%;
-    min-width: 1100px;
-    z-index: -1;
-}
-
-#template-bottom-background {
-    background: transparent url(../img/footer-background_trans.png) no-repeat left bottom;
-    bottom: 0;
-    height: 388px;
-    position: absolute;
-    width: 100%;
-    z-index: -2;
 }
 /*
  * utility class, mostly used when one needs to float the 
@@ -548,16 +523,6 @@ td.checked {
     margin-bottom: .5em;
 }
 /* Media Queries */
-
-/* Fixing the header's and footer's background scaling problem */
-@media (min-width: 960px) and (max-width: 1500px) {
-
-    #footer-background {
-        width: 90%;
-    }
-
-}
-
 /* Small screens */
 @media (max-width: 960px) {
 
@@ -570,13 +535,14 @@ td.checked {
         padding-left: 5px;
         padding-right: 5px;
     }
-    
-    nav,
-    header {
-        min-width: 97%;
+    footer p {
+        margin: 5px 0 0 5px;
+    }
+    footer .notices {
+        float: none;
+        margin-left: 61px;
     }
     
-    #footer-content,
     #body-content,
     #body-content aside,
     #main-content,
@@ -584,7 +550,7 @@ td.checked {
     #main-content article,
     #main-content .introduction,
     #main-content .full {
-        width: 98%;
+        width: 93%;
         min-width: 0;
     }
     #body-content aside section {
@@ -592,11 +558,9 @@ td.checked {
         margin-right: 20px;
         width: 200px;
     }
-
-    #template-bottom-background {
-        padding: 0;
+    .blogroll {
+        display: none;
     }
-
 }
 
 .hidden {
