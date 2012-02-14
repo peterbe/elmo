@@ -278,6 +278,7 @@ class HomepageTestCase(TestCase, EmbedsTestCaseMixin):
         eq_(response.status_code, 200)
         self.assert_all_embeds(response.content)
         content = response.content.split('id="teams"')[1]
+        content = content.split('<footer')[0]
 
         url_fr = reverse('homepage.views.locale_team', args=['fr'])
         url_sv = reverse('homepage.views.locale_team', args=['sv-SE'])
@@ -308,7 +309,9 @@ class HomepageTestCase(TestCase, EmbedsTestCaseMixin):
         self.assert_all_embeds(response.content)
         ok_('Swedish' in response.content)
         # it should also say "Swedish" in the <h1>
-        h1_text = re.findall('<h1[^>]*>(.*?)</h1>', response.content)[1]
+        h1_text = re.findall('<h1[^>]*>(.*?)</h1>',
+                             response.content,
+                             re.M | re.DOTALL)[0]
         ok_('Swedish' in h1_text)
 
     def test_pushes_redirect(self):
