@@ -85,6 +85,7 @@ for (var i=0, len=_locale_data_list.length; i<len; i++) {
 
 {% block header_h1 %}Statistics for {{ tree }}{% endblock %}
 {% block header_content_extra %}<p>String completeness for {{ tree }} localizations over time.</p>{% endblock %}
+{% block body_content_class %}page-wider{% endblock %}
 
 {% block content %}
 <div id="my-timeplot" style="height: 350px;"></div>

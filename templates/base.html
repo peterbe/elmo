@@ -50,8 +50,8 @@
     /* MetaWebPro font family licensed from fontshop.com. WOFF-FTW! */
     @font-face {
         font-family: 'MetaBold';
-	src: url('//www.mozilla.com/img/fonts/MetaWebPro-Bold.eot');
-	src: local({% if debug %}'{{ STATIC_URL }}fonts/MetaWebPro-Bold.woff'{% else %}'☺'{% endif %}), url('//www.mozilla.com/img/fonts/MetaWebPro-Bold.woff') format('woff');
+	src: url('{{ STATIC_URL }}fonts/MetaWebPro-Bold.eot');
+	src: local('☺'), url('{{ STATIC_URL }}fonts/MetaWebPro-Bold.woff') format('woff');
         font-weight: bold;
    }
    </style>
