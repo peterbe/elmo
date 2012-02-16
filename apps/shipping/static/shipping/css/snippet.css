@@ -76,7 +76,7 @@
     .trees .treename {
         font-weight: bold;
         vertical-align: middle;
-        width: 145px;
+        min-width: 145px;
     }
 
     .trees .treestatus {

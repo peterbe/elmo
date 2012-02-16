@@ -177,6 +177,9 @@ STATICFILES_FINDERS = (
 L10N_FEED_URL = 'http://planet.mozilla.org/l10n/atom.xml'
 HOMEPAGE_FEED_SIZE = 5
 
+## Number of locales to "preview" on the home page
+HOMEPAGE_LOCALES_LIMIT = 12
+
 try:
     import ldap_settings
 except ImportError:
