@@ -171,13 +171,13 @@ def teamsnippet(loc):
                       run.suggested_shortrev = None
         if appversion:
             run.appversion = appversion
-
             actions = [action_id for action_id, flag
                        in signoff_actions(
-                          appversions={'id': run.appversion.id},
-                          locales={'id': loc.id})]
-            actions = Action.objects.filter(id__in=actions) \
-                                    .select_related('signoff__push')
+                          appversions=[run.appversion],
+                          locales=[loc.id])
+                          ]
+
+            actions = Action.objects.filter(id__in=actions)
             # get current status of signoffs
             # we really only need the shortrevs, we'll get those below
             run.pending, run.rejected, run.accepted, __ = \
