@@ -11,63 +11,90 @@
     <meta charset="utf-8">
     <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/tabzilla.css" type="text/css">
     {% compress css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">
+    {#<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">#}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/sandstone_guide-min.css" type="text/css">
     {% endcompress %}
-    <style type="text/css">
-    /* MetaWebPro font family licensed from fontshop.com. WOFF-FTW! */
-    @font-face {
-        font-family: 'MetaBold';
-	src: url('{{ STATIC_URL }}fonts/MetaWebPro-Bold.eot');
-	src: local('☺'), url('{{ STATIC_URL }}fonts/MetaWebPro-Bold.woff') format('woff');
-        font-weight: bold;
-   }
-   </style>
 <title>{% block title_matter %}{% endblock %}</title>
 {% block head_matter %}{% endblock %}
 </head>
 
-<body {% block body_tag %}{% endblock %}>
-<div id="wrapper">
-		<nav>
+  <body {% block body_tag %}class="html-ltr windows stone "{% endblock %}>
+    <div id="outer-wrapper">
+    <div id="wrapper">
 
+        <header id="masthead">
+        <a href="http://www.mozilla.org/" id="tabzilla">Mozilla</a>
+
+        <nav id="nav-main" role="navigation">
+        <ol>
+            <li><a href="/b/en-US/mission/">Mission</a></li>
+            <li><a href="/b/en-US/about/">About</a></li>
+            <li><a href="/b/en-US/projects/">Projects</a></li>
+            <li><a href="/b/en-US/contribute/">Get Involved</a></li>
+        </ol>
+        </nav>
+        
+                <h2><a href="{% url homepage.views.index %}"><img src="{{ STATIC_URL }}img/sandstone/header-mozilla-stone.png" alt="mozilla"></a></h2>
+        
+        
+      </header>
 			<div id="auth">
 				{% include "accounts/user_forms.html" %}
 				<noscript>Not logged in</noscript>
 			</div>
 
 
-			<ul>
-				<li><a href="{% url homepage.views.index %}" class="homepage-link">Home</a></li>
-				<li><a href="{% url homepage.views.teams %}">Teams</a></li>
-				<li><a href="https://wiki.mozilla.org/L10n">Documentation</a></li>
-				{% block extra_nav_list_items %}{% endblock %}
-
-			</ul>
-
-		</nav>
-
-		<header>
-			<h1>{% block header_h1 %}<a href="/" title="Back to home page">{% block header_h1_inner %}mozilla Localization{% endblock %}</a>{% endblock %}</h1>
-            {% block header_content_extra %}
-            {% endblock %}
-		</header>
-		<div id="body-content" class="{% block body_content_class %}page-standard{% endblock %}">
-			<div id="main-content" class="{% block main_content_class %}{% endblock %}">
-			{% block content %}{% endblock %}
-			</div>
-                        {% block aside %}{% endblock %}
+        {% block content_outer %}
+	
+	<section class="container divider">
+          <div class="row">
+            <div class="span10">
+              {% block content %}{% endblock %}
+	    </div>
+	  </div>
+	</section>
+	{% endblock %}
 
 
+                  
+      </div><!-- close #wrapper -->
 
-		</div>
-</div>
-		<footer>
-		    <p><img src="{{ STATIC_URL }}img/logo_footer.png" alt="Mozilla" /></p>
+          <footer id="colophon">
+      <div class="row">
+
+          <div class="span3">
+              <a href="/en-US/" class="footer-logo"><img src="{{ STATIC_URL }}img/sandstone/footer-mozilla.png" alt="mozilla"></a>
+          </div>
+
+          <div class="span3">
            <p>Except where otherwise <a href="http://www.mozilla.org/en-US/about/legal.html#site">noted</a>,
                 content on this site is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution Share-Alike License v3.0</a> or any later version. </p>
-                <p class="notices"><a href="{% url privacy.views.show_policy %}">Privacy Policy</a> | <a href="http://www.mozilla.org/en-US/about/legal.html">Legal Notices</a></p>
-		</footer>
+           <p class="notices"><a href="{% url privacy.views.show_policy %}">Privacy Policy</a> | <a href="http://www.mozilla.org/en-US/about/legal.html">Legal Notices</a></p>
+          </div>
+          <nav class="span2">
+              <ul>
+                  <li><a href="/en-US/about/contact.html#map-mountain_view">Contact Us</a></li>
+                  <li><a href="/b/en-US/privacy/">Privacy Policy</a></li>
+                  <li><a href="/en-US/about/legal.html">Legal Notices</a></li>
+                  <li><a href="/en-US/legal/fraud-report/index.html">Report Trademark Abuse</a></li>
+              </ul>
+          </nav>
+
+                    <nav class="span2">
+            <ul>
+              <li><a href="http://twitter.com/firefox">Twitter</a></li>
+              <li><a href="http://facebook.com/Firefox">Facebook</a></li>
+              <li><a href="https://affiliates.mozilla.org/">Firefox Affiliates</a></li>
+            </ul>
+          </nav>
+          
+      </div>
+      </footer>
+    
+    <script src="{{ STATIC_URL }}js/libs/tabzilla.js"></script>
+    </div><!-- close #outer-wrapper -->
 
 <script>
 var CONFIG = {USER_URL: '{% url accounts.views.user_json %}',
@@ -102,5 +129,8 @@ window.webtrendsAsyncInit=function(){
 </script>
 <noscript><img alt="dcsimg" id="dcsimg" width="1" height="1" src="//statse.webtrendslive.com/dcsf7xfvtuz5bded1ux6dbh3k_4e3h/njs.gif?dcsuri=/nojavascript&amp;WT.js=No&amp;WT.tv=10.2.0&amp;dcssip=www.l10n.mozilla.org"/></noscript>
 {% endif %}
-	</body>
+
+</body>
 </html>
+
+

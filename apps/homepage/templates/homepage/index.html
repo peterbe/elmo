@@ -6,7 +6,6 @@
 {% endcomment %} -->
 {% load compress %}
 {% block title_matter %}Mozilla Localization{% endblock %}
-{% block body_tag %}id="home"{% endblock %}
 
 {% block head_matter %}
 {% compress css %}
@@ -18,13 +17,27 @@
 <p>Users first, no matter where they are.</p>
 {% endblock %}
 
-{% block main_content_class %}left-floated-container{% endblock %}
+{% block content_outer %}
 
-{% block content %}
+<hgroup id="main-feature" class="huge center">
+  <h1>mozilla Localization</h1>
+  <h2>Users first, no matter where they are.</h2>
+</hgroup>
 
-<section>
-	<article class="introduction full">
-		<h1>Getting started with Localization (L10n)</h1>
+<nav class="menu-bar billboard">
+  <ul>
+    <li><a href="{% url homepage.views.index %}" class="homepage-link">Home</a></li>
+    <li><a href="{% url homepage.views.teams %}">Teams</a></li>
+    <li><a href="https://wiki.mozilla.org/L10n">Documentation</a></li>
+  </ul>
+</nav>
+
+<section class="container divider">
+<div class="row">
+
+  <div class="span10">
+
+		<h2>Getting started with Localization (L10n)</h2>
 		<p>No matter where you live, your contributions can open the web to the world.
 		Everything you want to know about getting involved in our L10n effort, your L10n team's
 		progress, each mozilla project's overall progress, the mozilla L10n process, and
@@ -40,12 +53,20 @@
 			</a></li>
 			<li><a href="https://wiki.mozilla.org/L10n:Home_Page">More frequently asked questions...</a></li>
 		</ul>
-	</article>
+
+
+  </div>
+
+</div>
 </section>
 
-<section>
-	<article>
-		<h1>Localization Teams</h1>
+
+
+<section class="container divider">
+<div class="row">
+
+  <div class="span5">
+		<h2>Localization Teams</h2>
 		<p>We speak 90+ languages, how about you? Each language listed here represents the efforts
 		of a L10n team. See what your language is working on here: </p>
 
@@ -60,9 +81,9 @@
                         {% endfor %}
 			<li><a href="{% url homepage.views.teams %}">And {{ locales_rest_count }} more...</a></li>
 		</ul>
-	</article>
-	<article>
-		<h1>Projects to Localize</h1>
+  </div>
+  <div class="span5">
+ 		<h2>Projects to Localize</h2>
 		<p>We track the L10n progress of Firefox and other mozilla applications here.
 		You can also see and make contributions to mozilla web projects below.</p>
 		<ul>
@@ -73,12 +94,16 @@
 			developer articles on the MDN.</a></li>
 			<li><a href="http://babelzilla.org/">Localize add-ons here.</a></li>
 		</ul>
-	</article>
+  </div>		
+</div>
 </section>
 
-<section>
-	<article>
-		<h1>Learn About Localization</h1>
+
+<section class="container divider">
+<div class="row">
+
+  <div class="span5">
+		<h2>Learn About Localization</h2>
 		<p>Is L10n a foreign concept? Everything you need to know about L10n at mozilla can be
 		found here:</p>
 		<ul>
@@ -89,9 +114,9 @@
 			<li><a href="https://blog.mozilla.com/l10n">The official Mozilla L10n blog.</a></li>
 			<li><a href="https://wiki.mozilla.org/L10n:Resources">Resources for localizers.</a></li>
 		</ul>
-	</article>
-	<article>
-		<h1>Join the Community</h1>
+  </div>
+  <div class="span5">
+		<h2>Join the Community</h2>
 		<p>Our Mozillian L10n community is legendary! Become part of the legend here:</p>
 		<ul>
 			<li><a href="https://mozillians.org/en-US/">Add yourself to Mozillians here!</a></li>
@@ -103,33 +128,33 @@
 			about web L10n.
 			</a></li>
 		</ul>
-	</article>
+  </div>		
+</div>
 </section>
-<section>
-	<article class="full">
-		<h1>For Developers</h1>
+
+<section class="container divider">
+<div class="row">
+  <div class="span5">
+  
+		<h2>For Developers</h2>
 		<p>All projects at mozilla are Open Source, even this one! You can find it
                 on <a href="https://github.com/mozilla/elmo">Github</a> and make it even better.</p>
-	</article>
-</section>
-
-
-{% endblock %}
-
-{% block aside %}
-<div id="blogroll">
-<aside>
-	<section>
-		<h1>
+  </div>
+  <div class="span5">
+		<h2>
 			<a href="http://planet.mozilla.org/l10n/" class="rss-icon"><img src="{{ STATIC_URL }}img/icons/feed.png" alt="Subscribe to our feed" /></a>Mozilla L10n Blog
-		</h1>
+		</h2>
 		<ul class="blog-links">
             {% for item in feed_items %}
 		    <li><a href="{{ item.url }}">{{ item.title|truncatewords:8 }}</a></li>
             {% endfor %}
          </ul>
-	</section>
-</aside>
+  </div>
+  
+  
 </div>
+</section>
+
 
 {% endblock %}
+
