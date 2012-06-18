@@ -18,7 +18,6 @@
 
 {% block javascript_matter %}
 <script src="{{ STATIC_URL }}js/jquery.ui/jquery-ui-1.8.16.custom.min.js"></script>
-
 <script>
 var diffData = {
   locale: "{{lang.code}}",
@@ -42,7 +41,7 @@ var signoffDetailsURL = "{% url shipping.views.signoff.signoff_details language.
   <li><a href="{% url homepage.views.locale_team language.code %}">{{language}}</a></li>
 </ul>
 <h1>Sign-offs for {{appver}} in {{language}}</h1>
-<p>{% if not appver.accepts_signoffs %}{{appver}} is not open for new sign-offs. It's either too early or too late
+<p class="signoff-status">{% if not appver.accepts_signoffs %}{{appver}} is not open for new sign-offs. It's either too early or too late
 to do that.{% endif %}
 {% if accepted %}There is {% if fallback %}a {{ real_av }} <a href="#{{fallback.tip.shortrev}}">fallback
 signoff</a>{% else %}a <a href="#{{accepted.tip.shortrev}}">current accepted sign-off</a>{% endif %},

@@ -87,6 +87,26 @@ $(document).ready(function() {
       rs.dialog('open');
     });
   }
+
+  // for each anchor link in the signoff status message,
+  // make the elements it points to highlit
+  $('a[href^="#"]', 'p.signoff-status').click(function() {
+    var target = $($(this).attr('href'));
+    if (target.size()) {
+      target.effect('highlight', {}, 1500);
+    } else {
+      alert('That sign-off is not on this page');
+    }
+    // let it bubble through in case someone copies the URL
+  });
+
+  // if the hash already references a signoff, then highlight it
+  if (location.hash && location.hash.length == 12 + 1) {
+    var target = $(location.hash);
+    if (target.size()) {
+      target.effect('highlight', {}, 3000);
+    }
+  }
 });
 
 var Review = {
