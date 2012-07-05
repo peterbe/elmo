@@ -12,6 +12,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # TODO: from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, etag
 from django.views.decorators import cache
+from django.core.urlresolvers import reverse
 
 from life.models import Locale, Push
 from shipping.models import AppVersion, Signoff, Action
@@ -63,6 +64,12 @@ def etag_signoff(request, locale_code, app_code):
     review_signoff = request.user.has_perm('shipping.review_signoff')
 
     return "%d|%d|%d|%d|%d" % ((can_signoff, review_signoff) + ids)
+
+
+def signoff_locale(request, locale_code):
+    get_object_or_404(Locale, code=locale_code)
+    return redirect(reverse('homepage.views.locale_team', args=[locale_code]),
+                    permanent=True)
 
 
 # XXX bug 763214, disable etag and test for now

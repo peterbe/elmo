@@ -311,3 +311,19 @@ en-US
         etag_before = etag
         etag = response.get('etag', None)
         ok_(etag != etag_before)
+
+    def test_redirect_signoff_locale(self):
+        url = reverse('shipping.views.signoff.signoff_locale', args=['xxx'])
+        response = self.client.get(url)
+        eq_(response.status_code, 404)
+
+        Locale.objects.create(code='sl', name='Slovenian')
+        url = reverse('shipping.views.signoff.signoff_locale', args=['sl'])
+
+        response = self.client.get(url)
+        eq_(response.status_code, 301)  # permanent
+        self.assertRedirects(
+            response,
+            reverse('homepage.views.locale_team', args=['sl']),
+            status_code=301
+        )
