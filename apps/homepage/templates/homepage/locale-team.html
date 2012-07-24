@@ -14,11 +14,13 @@ var LOCALE_CODE = '{{ locale.code }}';
 {% compress js %}
 <script src="{{ STATIC_URL }}bugsy/js/bugcount.js"></script>
 <script src="{{ STATIC_URL }}homepage/js/webdashboard.js"></script>
+<script src="{{ STATIC_URL }}homepage/js/locale-team.js"></script>
 {% endcompress %}
 {% endblock %}
 
 {% block head_matter %}
 {% compress css %}
+<link rel="stylesheet" href="{{ STATIC_URL }}homepage/css/locale-team.css" type="text/css">
 <link rel="stylesheet" href="{{ STATIC_URL }}shipping/css/dashboard.css" type="text/css">
 <link rel="stylesheet" href="{{ STATIC_URL }}shipping/css/snippet.css" type="text/css">
 {% endcompress %}
@@ -29,13 +31,37 @@ Mozilla Localization Team {{ locale.name }}
 <span class="lang">({{ locale.code }})</span>
 {% endblock %}
 
+{% block body_tag %} id="top"{% endblock %}
+
 {% block content %}
-<p>&lt; Back to <a href="{% url homepage.views.teams %}">all teams</a></p>
-<p>Contact the team on it's page on <a href="https://wiki.mozilla.org/L10n:Teams:{{locale.code}}">wikimo</a>.</p>
 
+<div class="subnav">
+  <ul>
+    <li>
+      <a href="#shipping">Applications &amp; Sign-offs</a>
+    </li>
+    <li>
+      <a href="#bugs">Bugzilla</a>
+    </li>
+    <li>
+      <a href="#webdashboard">Web Dashboard</a>
+    </li>
+  </ul>
+</div>
+
+<p>&lt; Back to <a href="{% url homepage.views.teams %}">all teams</a>
+<br>
+Contact the team on it's page on <a href="https://wiki.mozilla.org/L10n:Teams:{{locale.code}}">wikimo</a>.</p>
+
+<div id="shipping">
 {{ shipping }}
+<p class="navigate-top"><a href="#top">top</a></p>
+</div>
 
+<div id="bugs">
 {{ bugs }}
+<p class="navigate-top"><a href="#top">top</a></p>
+</div>
 
 <div id="webdashboard">
 <p class="rss-icon-outer" style="float:right"><a href="{{ webdashboard_url }}?locale={{ locale.code }}"><img src="{{ STATIC_URL }}img/icons/feed.png" alt="Subscribe to our feed"></a></p>
@@ -64,5 +90,8 @@ you can check the current status on the <a href="https://www-dev.allizom.org/{{ 
 <table class="standard trees" style="display:none">
 </table>
 </div>
+
+<p class="navigate-top"><a href="#top">top</a></p>
+
 
 {% endblock %}
