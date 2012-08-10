@@ -3,30 +3,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
-.subnav li.active a, .subnav li a:hover {
-    padding-left: 13px;
-    color: rgb(119, 119, 119);
-    background-color: rgb(233, 233, 233);
-    border-right-color: rgb(221, 221, 221);
-    border-left: 0px none;
-    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05) inset;
+.subnav {
+    width: 100%;
+    height: 36px;
+    background-color: #eeeeee;
+    border: 1px solid #d3d3d3;
+    margin-bottom: 14px;
 }
 
-.subnav li a {
-    padding-right: 12px;
-    padding-left: 12px;
-    margin-right: 2px;
-
-    display: block;
-    margin: 0px;
-    padding-top: 11px;
-    padding-bottom: 11px;
-    border-left: 1px solid rgb(245, 245, 245);
-    border-right: 1px solid rgb(229, 229, 229);
-    border-radius: 0px 0px 0px 0px;
-
-    line-height: 14px;
-
+.subnav ul {
+    padding: 0;
+    margin: 0 0 9px 25px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    list-style: none outside none;
 }
 
 .subnav ul li {
@@ -35,24 +25,26 @@
     list-style: none outside none;
 }
 
-.subnav ul {
-    padding: 0px;
-    margin: 0px 0px 9px 25px;
-    margin-bottom: 0px;
-    margin-left: 0px;
-    list-style: none outside none;
+.subnav li a:hover {
+    color: rgb(119, 119, 119);
+    background-color: rgb(233, 233, 233);
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05) inset;
 }
 
-.subnav {
-    width: 100%;
-    height: 36px;
-    background-color: rgb(238, 238, 238);
-    background-repeat: repeat-x;
-    background-image: -moz-linear-gradient(center top , rgb(245, 245, 245) 0%, rgb(238, 238, 238) 100%);
-    border: 1px solid rgb(229, 229, 229);
-    border-radius: 4px 4px 4px 4px;
+.subnav li a {
+    padding-right: 12px;
+    padding-left: 12px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    display: block;
+    border-right: 1px solid #d3d3d3;
+    line-height: 14px;
 }
 
-p.navigate-top {
-    text-align: right;
+.subnav li.last a {
+   border-right: none
+}
+
+.subnav li a.external-link {
+    padding-right: 15px;
 }
