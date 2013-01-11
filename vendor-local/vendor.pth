@@ -1,2 +1,3 @@
 src/compare-locales/lib
 src/nashvegas
+src/django-qunit

@@ -1,0 +1,41 @@
+<!-- {% comment %}
+   - This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.
+{% endcomment %} -->
+
+
+<script>
+var CONFIG = {USER_URL: '{% url accounts.views.user_json %}',
+              CURRENT_URL: {% if request %}'{{ request.get_full_path }}'{% else %}window.location.href{% endif %},
+              LOADING_GIF_URL: '/static/img/loading.gif',
+              NEEDS_RELOAD: false
+              };
+
+var _LOGIN_URL = '{% url accounts.views.login %}';
+</script>
+
+
+<div id="auth">
+<a class="site_login" href="#login">Log in</a>
+<p class="site_login_error" style="display:none">
+<strong>Server Error!</strong><br>
+Unable to complete the log in request. Try again a little later.
+</p>
+
+<form style="display:none" class="site_login" method="post" action="{% url accounts.views.login %}">
+<div style="display:none"><input type="hidden" name="next" value=""></div>
+  <label>
+    <input id="id_username" type="text" placeholder="Email" name="username" maxlength="75" />
+  </label>
+  <label>
+    <input type="password" placeholder="Password" name="password" id="id_password" />
+  </label>
+</form>
+
+<div class="site_logout" style="display:none">
+  Hello, <span class="username"></span>.
+  <a class="logout" href="{% url accounts.views.logout %}">Log out</a>
+</div>
+
+</div>

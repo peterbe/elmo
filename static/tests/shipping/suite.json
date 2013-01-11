@@ -1,0 +1,10 @@
+{
+    "name": "Shipping tests",
+    "html_fixtures": [
+      "diff_fixture.html"
+    ],
+    "extra_urls": [
+      "/static/js/libs/jquery-1.6.2.min.js",
+      "/static/pushes/js/diff.js"
+    ]
+}

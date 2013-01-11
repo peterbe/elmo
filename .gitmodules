@@ -7,3 +7,6 @@
 [submodule "vendor-local/src/nashvegas"]
 	path = vendor-local/src/nashvegas
 	url = git://github.com/paltman/nashvegas.git
+[submodule "vendor-local/src/django-qunit"]
+	path = vendor-local/src/django-qunit
+	url = git://github.com/peterbe/django-qunit.git

@@ -1,0 +1,6 @@
+{
+    "name": "Main Test Suite",
+    "extra_urls": [
+      "/static/js/jquery.js"
+    ]
+}

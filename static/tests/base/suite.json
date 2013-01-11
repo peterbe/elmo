@@ -1,0 +1,10 @@
+{
+    "name": "Base Test suite",
+    "html_fixtures": [
+      "base_fixture.html"
+    ],
+    "extra_urls": [
+      "/static/js/libs/jquery-1.6.2.min.js",
+      "/static/js/base.js"
+    ]
+}

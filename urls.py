@@ -70,3 +70,8 @@ urlpatterns += patterns('',
 
 #if settings.DEBUG:
 urlpatterns += staticfiles_urlpatterns()
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url('^qunit/', include('django_qunit.urls'))
+    )

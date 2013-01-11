@@ -99,6 +99,7 @@ INSTALLED_APPS += (
     'compressor',
 
     # Third-party apps
+    'django_qunit',
 
     # Django contrib apps
     'django.contrib.staticfiles',
@@ -181,6 +182,9 @@ HOMEPAGE_FEED_SIZE = 5
 
 ## Google Analytics
 INCLUDE_ANALYTICS = False
+
+# QUnit testing
+QUNIT_TEST_DIRECTORY = path('static/tests')
 
 
 try:
