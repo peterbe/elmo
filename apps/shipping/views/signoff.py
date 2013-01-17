@@ -49,6 +49,8 @@ class SignoffView(TemplateView):
             appversions={'id': appver.id})
                           .get(appver, {})
                           .get(lang.code, [None, {}]))
+        print "REAL_AV", repr(real_av)
+        print "FLAGS", flags
         actions = list(Action.objects.filter(id__in=flags.values())
                        .select_related('signoff__push__repository', 'author'))
 
@@ -125,7 +127,7 @@ class SignoffView(TemplateView):
             else:
                 repoquery = Q(**qd)
         pushes_q = pushes_q.filter(repoquery)
-        current_so = None
+        current_so = pending_so = rejected_so = None
         action4id = dict((a.id, a) for a in actions)
         initial_diff = []
         if Action.ACCEPTED in flags:
@@ -133,17 +135,41 @@ class SignoffView(TemplateView):
             current_so = a.signoff
             initial_diff.append(a.signoff_id)
         if Action.PENDING in flags:
+            p = action4id[flags[Action.PENDING]]
+            pending_so = p.signoff
             initial_diff.append(action4id[flags[Action.PENDING]].signoff_id)
         if Action.REJECTED in flags and len(initial_diff) < 2:
+            p = action4id[flags[Action.REJECTED]]
+            rejected_so = p.signoff
             initial_diff.append(action4id[flags[Action.REJECTED]].signoff_id)
         # if we're having a sign-off on this appversion, i.e no fallback,
         # show only new pushes
-        if current_so is not None and fallback is None:
+        if current_so and not fallback:
+        #if current_so is not None and fallback is None:
             pushes_q = (pushes_q
                         .filter(push_date__gte=current_so.push.push_date)
                         .distinct())
         else:
-            pushes_q = pushes_q.distinct()[:count]
+            #print "\tPENDING"
+            #print "\t%r"% pending_so#, pending_so.push.push_date
+            #print "\tREJECTED"
+            #print "\t%r"% rejected_so
+
+            # e.g. no current sign-off and a fallback
+            if pending_so:
+                pushes_q = (
+                    pushes_q
+                    .filter(push_date__gte=pending_so.push.push_date)
+                    .distinct()
+                )
+            elif rejected_so:
+                pushes_q = (
+                    pushes_q
+                    .filter(push_date__gte=rejected_so.push.push_date)
+                    .distinct()
+                )
+            else:
+                pushes_q = pushes_q.distinct()[:count]
 
         # get pushes, changesets and signoffs/actions
         _p = list(pushes_q.values_list('id', flat=True))

@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import datetime
 from nose.tools import eq_, ok_
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -10,7 +11,7 @@ from django.utils import simplejson as json
 from commons.tests.mixins import EmbedsTestCaseMixin
 from shipping.models import Milestone, AppVersion, Action, Signoff
 from shipping import api
-from life.models import Locale
+from life.models import Locale, Push, Repository, Branch, Changeset
 from shipping.views.signoff import SignoffView
 
 
@@ -337,7 +338,6 @@ en-US
                           .get(locale.code, [None, {}]))
         actions = list(Action.objects.filter(id__in=flags.values())
                        .select_related('signoff__push__repository', 'author'))
-        fallback = None
         fallback, = actions
         assert fallback.flag == Action.ACCEPTED, fallback.flag
         pushes, suggested_signoff = view.annotated_pushes(
@@ -352,3 +352,172 @@ en-US
         revisions = [x.revision for x in changesets]
         # only `de` changes in the right order
         eq_(revisions, [u'l10n de 0003', u'l10n de 0002'])
+
+    def test_668761(self):#XXX better name
+        # we need a case where there are >10 pushes,
+        # no accepted signoff and a fallback,
+        # and a pending signoff that is more than 10 pushes away
+        view = SignoffView()
+        locale = Locale.objects.get(code='de')
+
+        repository, = Repository.objects.filter(locale=locale)
+        branch, = Branch.objects.all()
+
+        first_date = datetime.datetime.utcnow() - datetime.timedelta(days=12)
+        Push.objects.all().delete()
+        push0 = Push.objects.create(
+            user='Bill',
+            repository=repository,
+            push_date=first_date,
+            push_id=1
+        )
+        change0 = Changeset.objects.create(
+            revision='abc123',
+            user='user@example.tld',
+            description='Description0',
+            branch=branch
+        )
+        push0.changesets.add(change0)
+
+        axel = User.objects.create_user('axel', 'axel@mozilla.com', 'secret')
+        peter = User.objects.create_user('peter', 'peter@mozilla.com', 'secret')
+        signoff0 = Signoff.objects.create(
+            push=push0,
+            appversion=self.av,
+            author=axel,
+            locale=locale,
+        )
+        fallback = Action.objects.create(
+            signoff=signoff0,
+            flag=Action.PENDING,
+            author=peter,
+        )
+
+        real_av, flags = (api.flags4appversions(
+            locales={'id': locale.id},
+            appversions={'id': self.av.id})
+                          .get(self.av, {})
+                          .get(locale.code, [None, {}]))
+        #print "FLAGS", flags
+        #print Action.objects.all()
+        #print [x.id for x in Action.objects.all()]
+        actions = Action.objects.filter(id__in=flags.values())
+        #fallback, = list(actions)
+        assert fallback.flag == Action.PENDING, fallback.flag
+        pushes, suggested_signoff = view.annotated_pushes(
+            actions,
+            flags,
+            fallback,
+            locale,
+            self.av
+        )
+        eq_(len(pushes), 1)
+        push, = pushes
+        _fmt = '%Y %m %d %H:%M:%S'
+        eq_(
+            push['when'].strftime(_fmt),
+            first_date.strftime(_fmt)
+        )
+        eq_(push['who'], 'Bill')
+        first_change, = push['changes']
+        eq_(first_change.description, 'Description0')
+
+        # now suppose 10 other pushes are squeezed in
+        for i in range(1, 11):
+            push = Push.objects.create(
+                user='Bob',
+                repository=repository,
+                push_date=first_date + datetime.timedelta(days=i),
+                push_id=i + 1
+            )
+            change = Changeset.objects.create(
+                revision='abc123-%d' % i,
+                user='user@example.tld',
+                description='Description%d' % i,
+                branch=branch
+            )
+            push.changesets.add(change)
+
+        pushes, suggested_signoff = view.annotated_pushes(
+            actions,
+            flags,
+            fallback,
+            locale,
+            self.av,
+            count=10
+        )
+        assert pushes
+        # 10 +  the first push which has a pending sign-off
+        eq_(len(pushes), 11)
+
+        first_push = pushes[0]
+        first_change, = first_push['changes']
+        eq_(first_change.description, 'Description10')
+
+        last_push = pushes[-1]
+        eq_(last_push['who'], 'Bill')
+        last_change, = last_push['changes']
+        eq_(last_change.description, 'Description0')
+
+        # the same should work if initial sign off is rejected
+        Action.objects.create(
+            signoff=signoff0,
+            flag=Action.REJECTED,
+            author=peter,
+        )
+        pushes, suggested_signoff = view.annotated_pushes(
+            actions,
+            flags,
+            fallback,
+            locale,
+            self.av,
+            count=10
+        )
+        assert pushes
+        # 10 +  the first push which has a rejected sign-off
+        eq_(len(pushes), 11)
+        last_push = pushes[-1]
+        eq_(last_push['who'], 'Bill')
+        last_change, = last_push['changes']
+        eq_(last_change.description, 'Description0')
+
+        # and of course it works if it's accepted
+        Action.objects.create(
+            signoff=signoff0,
+            flag=Action.ACCEPTED,
+            author=peter,
+        )
+        pushes, suggested_signoff = view.annotated_pushes(
+            actions,
+            flags,
+            fallback,
+            locale,
+            self.av,
+            count=10
+        )
+        assert pushes
+        # 10 +  the first push which has a rejected sign-off
+        eq_(len(pushes), 11)
+        last_push = pushes[-1]
+        eq_(last_push['who'], 'Bill')
+        last_change, = last_push['changes']
+        eq_(last_change.description, 'Description0')
+
+        # no accepted, pending or rejected signoffs anymore
+        Action.objects.all().delete()
+        real_av, flags = (api.flags4appversions(
+            locales={'id': locale.id},
+            appversions={'id': self.av.id})
+                          .get(self.av, {})
+                          .get(locale.code, [None, {}]))
+        pushes, suggested_signoff = view.annotated_pushes(
+            actions,
+            flags,
+            fallback,
+            locale,
+            self.av,
+            count=10
+        )
+        assert pushes
+        # back to limited to 10
+        eq_(len(pushes), 10)
