@@ -5,6 +5,7 @@
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.common.exceptions import NoSuchElementException
 
+from django.test.utils import override_settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
@@ -24,9 +25,10 @@ class HomepageSeleniumTests(LiveServerTestCase, LiveServerMixin):
     def setUpClass(cls):
         cls.selenium = WebDriver()
         super(HomepageSeleniumTests, cls).setUpClass()
-        settings.AUTHENTICATION_BACKENDS = (
-            'django.contrib.auth.backends.ModelBackend',
-        )
+        #cls._authentication_backends = settings.AUTHENTICATION_BACKENDS
+        #settings.AUTHENTICATION_BACKENDS = (
+        #    'django.contrib.auth.backends.ModelBackend',
+        #)
 
     @classmethod
     def tearDownClass(cls):
@@ -98,6 +100,8 @@ class HomepageSeleniumTests(LiveServerTestCase, LiveServerMixin):
             'French'
         )
 
+    @override_settings(AUTHENTICATION_BACKENDS=\
+                       ('django.contrib.auth.backends.ModelBackend',))
     def test_sign_in_and_fail(self):
         # go to the home page
         self.get(reverse('homepage.views.index'))
@@ -130,6 +134,8 @@ class HomepageSeleniumTests(LiveServerTestCase, LiveServerMixin):
         button.click()
         self.wait_for_element_present('form.site_login span.error')
 
+    @override_settings(AUTHENTICATION_BACKENDS=\
+                       ('django.contrib.auth.backends.ModelBackend',))
     def test_sign_in_and_succeed(self):
         # go to the home page
         self.get(reverse('homepage.views.index'))

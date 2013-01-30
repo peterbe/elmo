@@ -106,9 +106,7 @@ class LiveServerMixin(object):
         # fails.
         wait = 0.1
         while not self.is_element_present(selection):
-            print "time.sleep(%r)" % wait
-            time.sleep(wait)
-            #count += 1
-            if wait >= self.timeout:
+            if wait > self.timeout:
                 raise Exception('%s has not loaded' % selection)
+            time.sleep(wait)
             wait *= 2
