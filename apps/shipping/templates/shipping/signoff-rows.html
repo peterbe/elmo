@@ -11,7 +11,7 @@
   {% else %}
     <tr class="push-spacer"></tr>
   {% endif %}
-  <tr class="pushrow {% if forloop.first %}pushrow-first{% endif %}" id="{{push.id}}" data-push="{{push.push_id}}">
+  <tr class="pushrow {% if forloop.first %}pushrow-first{% endif %}" id="{{push.id}}" data-push="{{push.push_id}}" data-push_date="{{push.push_date.isoformat}}">
     <td class="push{% if forloop.first %} top{% endif %}{% if forloop.last %}  bottom {% endif %}" rowspan="{{push.rows}}">{{push.when|date}}<br><span class="csuser">{{push.who}}</span></td>
     <td rowspan="{{push.changerows}}">{{push.run|showrun}}<br>
      <span class="csuser">{{push.run.build.starttime|date}}</span></td>
@@ -37,7 +37,7 @@
     </td>
     <td class="diff {% if forloop.first %}diff-first{% endif %}">{% for _i in cs.diffbases %}<div class="diffanchor"></div>{% endfor %}</td></tr>
     {% if not forloop.last %}
-  <tr class="pushrow pushrow-inner" data-push="{{push.push_id}}">
+  <tr class="pushrow pushrow-inner" data-push="{{push.push_id}}" data-push_date="{{push.push_date.isoformat}}">
     {% endif %}
     {% endfor %}
     {% if push.signoffs|length %}

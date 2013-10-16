@@ -117,8 +117,11 @@ looks good to <a href="#{{suggested_signoff}}">sign off on</a>.{% endif %}
 {% endif %}
 <table id="pushtable" class="standard">
 {% include "shipping/signoff-rows.html" %}
-  <tr><td colspan="4" class="note">Loading more data will be part of
-  <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=658656">bug 658656</a></td></tr>
+  <tr>
+    <td colspan="4" class="note">
+      <a href="#" class="load-more">Load more</a>
+    </td>
+  </tr>
 {% if fallback %}
   <tr class="tree-change-spacer"></tr>
   <tr class="pushrow" id="{{fallback.tip.shortrev}}" data-push="{{fallback.tip.shortrev}}">

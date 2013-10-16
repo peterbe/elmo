@@ -117,6 +117,26 @@ $(document).ready(function() {
       rs.dialog('open');
     });
   }
+
+  $('a.load-more').click(function() {
+    var this_row = $(this).parents('tr');
+    var min_push_date;
+    $('tr.pushrow').each(function(i, each) {
+      if ($(each).data('push_date')) {
+        min_push_date = $(each).data('push_date');
+      }
+    });
+    var url = location.pathname;
+    //console.log('URL', url);
+    console.log('min_push_date', min_push_date);
+    console.log('# rows before', $('tr.pushrow').length);
+    var req = $.get(url + '/more/', {push_date: min_push_date});
+    req.then(function(html) {
+      $(html).insertBefore(this_row);
+      console.log('# rows after', $('tr.pushrow').length);
+    });
+    return false;
+  });
 });
 
 var Review = {

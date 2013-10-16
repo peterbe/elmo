@@ -21,6 +21,7 @@ from life.models import (
 from l10nstats.models import Run_Revisions, Run
 from shipping.models import AppVersion, Signoff, Action
 from shipping.api import flags4appversions
+from shipping.forms import SignoffsPaginationForm
 
 
 def signoff_locale(request, locale_code):
@@ -37,6 +38,10 @@ class SignoffView(TemplateView):
     It's also the entry point for drivers to review existing sign-offs.
     """
     template_name = 'shipping/signoffs.html'
+
+    count = 10
+    offset = 0
+    min_push_date = None
 
     def get(self, request, locale_code, app_code):
         appver = get_object_or_404(AppVersion, code=app_code)
@@ -73,6 +78,9 @@ class SignoffView(TemplateView):
             fallback,
             lang,
             appver,
+            min_push_date=self.min_push_date,
+            count=self.count,
+            offset=self.offset
         )
 
         try:
@@ -97,10 +105,14 @@ class SignoffView(TemplateView):
         }
 
     def annotated_pushes(self, actions, flags, fallback,
-                         lang, appver, count=10):
+                         lang, appver,
+                         min_push_date=None,
+                         count=10, offset=0):
         pushes_q = (Push.objects
                     .filter(changesets__branch__id=1)
                     .order_by('-push_date'))
+        if min_push_date:
+            pushes_q = pushes_q.filter(push_date__lt=min_push_date)
         # Find the repos via trees_over_time
         forest4times = dict()
         tree4forest = dict()
@@ -158,6 +170,7 @@ class SignoffView(TemplateView):
             if len(initial_diff) < 2:
                 initial_diff.append(a.signoff_id)
 
+        last_push_date = None
         if cutoff_dates:
             last_push_date = min(cutoff_dates)
             if fallback or Action.ACCEPTED not in flags:
@@ -178,7 +191,12 @@ class SignoffView(TemplateView):
                 .distinct()
             )
         else:
-            pushes_q = pushes_q.distinct()[:count]
+            #if pushes_q.distinct().count() > count:
+            #    raise Exception(lang)
+            print( pushes_q.distinct().count() , count)
+            pushes_q = pushes_q.distinct()[offset:count]
+
+        print ('last_push_date', last_push_date)
 
         # get pushes, changesets and signoffs/actions
         _p = list(pushes_q.values_list('id', flat=True))
@@ -297,6 +315,7 @@ class SignoffView(TemplateView):
         if push is not None:
             self.pushes.append({'changes': [],
                                 'push_id': push.id,
+                                'push_date': push.push_date,
                                 'who': push.user,
                                 'when': push.push_date,
                                 'repo': push.repository.name,
@@ -308,6 +327,23 @@ class SignoffView(TemplateView):
 
 signoff = SignoffView.as_view()
 
+
+class SignoffRowsView(SignoffView):
+
+    template_name = 'shipping/signoff-rows.html'
+
+    def get(self, request, *args, **kwargs):
+
+        self.offset = int(request.GET.get('offset', 0))
+        form = SignoffsPaginationForm(request.GET)
+        if form.is_valid():
+            self.min_push_date = form.cleaned_data['push_date']
+        else:
+            raise NotImplementedError(form.errors)
+        return super(SignoffRowsView, self).get(request, *args, **kwargs)
+
+
+signoff_rows = SignoffRowsView.as_view()
 
 def signoff_details(request, locale_code, app_code):
     """Details pane loaded on sign-off on a particular revision.
