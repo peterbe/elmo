@@ -42,7 +42,7 @@ class SignoffView(TemplateView):
     """
     template_name = 'shipping/signoffs.html'
 
-    count = 5
+    count = 5## TEMPOARY, CHANGE BACK TO 10 LATER
 
     def get(self, request, locale_code, app_code):
         appver = get_object_or_404(AppVersion, code=app_code)
