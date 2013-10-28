@@ -120,20 +120,17 @@ $(document).ready(function() {
 
   $('a.load-more').click(function() {
     var this_row = $(this).parents('tr');
-    var min_push_date;
-    $('tr.pushrow').each(function(i, each) {
-      if ($(each).data('push_date')) {
-        min_push_date = $(each).data('push_date');
-      }
-    });
     var url = location.pathname;
-    //console.log('URL', url);
-    console.log('min_push_date', min_push_date);
-    console.log('# rows before', $('tr.pushrow').length);
+    // `min_push_date` is defined in the global window scope
     var req = $.get(url + '/more/', {push_date: min_push_date});
-    req.then(function(html) {
-      $(html).insertBefore(this_row);
-      console.log('# rows after', $('tr.pushrow').length);
+    req.then(function(response) {
+      $(response.html).insertBefore(this_row);
+      if (!response.pushes_left) {
+        this_row.remove();
+      } else {
+        min_push_date = response.min_push_date;
+        $('.pushes-left', this_row).text(response.pushes_left);
+      }
     });
     return false;
   });
