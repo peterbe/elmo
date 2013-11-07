@@ -44,6 +44,8 @@ class SignoffView(TemplateView):
 
     count = 5## TEMPOARY, CHANGE BACK TO 10 LATER
 
+    attach_diffbases = True
+
     def get(self, request, locale_code, app_code):
         appver = get_object_or_404(AppVersion, code=app_code)
         lang = get_object_or_404(Locale, code=locale_code)
@@ -80,7 +82,6 @@ class SignoffView(TemplateView):
             flags=flags,
             fallback=fallback,
             count=self.count,
-            attach_diffbases=True
         )
 
         try:
@@ -115,8 +116,7 @@ class SignoffView(TemplateView):
                          lang, appver,
                          min_push_date=None,
                          actions=None, flags=None, fallback=None,
-                         count=10,
-                         attach_diffbases=False):
+                         count=10):
         pushes_q = (Push.objects
                     .filter(changesets__branch__id=1)
                     .order_by('-push_date'))
@@ -155,6 +155,9 @@ class SignoffView(TemplateView):
                 repoquery = Q(**qd)
         pushes_q = pushes_q.filter(repoquery)
 
+        # used when there is not a min_push_date
+        initial_diff = []
+
         if min_push_date:
             # Indendepent of action cutoffs we just, filter by the
             # minimum push date and the limit
@@ -163,9 +166,6 @@ class SignoffView(TemplateView):
             ).distinct()
             pushes_left = pushes_q.count()
             pushes_q = pushes_q[:count]
-
-            # not applicable when loading more pushes
-            initial_diff = []
 
         else:
             # This is the first load whereby we want to select all pushes up
@@ -263,13 +263,13 @@ class SignoffView(TemplateView):
         # merge data back into pushes list
         suggested_signoff = None
         # initial_diff and runs
-        if attach_diffbases and len(initial_diff) < 2 and pushes:
+        if self.attach_diffbases and len(initial_diff) < 2 and pushes:
             pushes[0]['changes'][0].diffbases = (
               [None] * (2 - len(initial_diff))
             )
 
         # the oldest push_date of all these
-        min_push_date = None
+        min_push_date = pushes[-1]['push_date'] if pushes else None
 
         for p in pushes:
             # initial_diff
@@ -292,9 +292,6 @@ class SignoffView(TemplateView):
                         # last push is signed off or red,
                         # don't suggest anything
                         suggested_signoff = False
-
-            # we want to keep the oldest
-            min_push_date = p['push_date']
 
         # mark up pushes that change forests/trees
         for i in xrange(len(pushes) - 1, 0, -1):
@@ -364,6 +361,8 @@ signoff = SignoffView.as_view()
 class SignoffRowsView(SignoffView):
 
     template_name = 'shipping/signoff-rows.html'
+
+    attach_diffbases = False
 
     def get(self, request, locale_code, app_code):
         appver = get_object_or_404(AppVersion, code=app_code)
