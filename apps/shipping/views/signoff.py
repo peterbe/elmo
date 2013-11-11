@@ -214,7 +214,7 @@ class SignoffView(TemplateView):
                 ).distinct()
                 pushes_left = pushes_q.count()
             else:
-                pushes_left = pushes_q.count()
+                pushes_left = pushes_q.distinct().count()
                 pushes_q = pushes_q.distinct()[:count]
 
         # get pushes, changesets and signoffs/actions
@@ -267,6 +267,10 @@ class SignoffView(TemplateView):
             pushes[0]['changes'][0].diffbases = (
               [None] * (2 - len(initial_diff))
             )
+
+        # We did a count before, and then we did `pushes = pushes_q[:count]`
+        # which will reduce the number ultimately left
+        pushes_left -= len(pushes)
 
         # the oldest push_date of all these
         min_push_date = pushes[-1]['push_date'] if pushes else None

@@ -118,22 +118,28 @@ $(document).ready(function() {
     });
   }
 
-  $('a.load-more').click(function() {
-    var this_row = $(this).parents('tr');
+  $('button.load-more').click(function() {
+    var button = $(this);
+    var this_row = button.parents('tr');
     var url = location.pathname;
     // `min_push_date` is defined in the global window scope
     var req = $.get(url + '/more/', {push_date: min_push_date});
     req.then(function(response) {
       $(response.html).insertBefore(this_row);
       if (!response.pushes_left) {
-        this_row.remove();
+        button.attr('disabled', 'disabled');
       } else {
         min_push_date = response.min_push_date;
-        $('.pushes-left', this_row).text(response.pushes_left);
       }
+      $('.pushes-left', this_row).text(response.pushes_left);
     });
     return false;
   });
+
+  // Firefox has a tendency to "cache" that a button should remain disabled
+  // even if you refresh the page without a force-refresh
+  $('button.load-more[disabled=""]').removeProp('disabled')
+
 });
 
 var Review = {
