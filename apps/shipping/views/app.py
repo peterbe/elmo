@@ -50,7 +50,7 @@ def changes(request, app_code):
                 # if the loc isn't here, it's never been accepted so far
                 real_av, flags = flags4fallback[loc]
                 if Action.ACCEPTED in flags:
-                    locs4av[real_av] = flags[Action.ACCEPTED]
+                     locs4av[real_av] = flags[Action.ACCEPTED]
     # let's keep the current appver data around for later,
     # and order the fallbacks
     accepted = locs4av.pop(av.code, {})
@@ -106,6 +106,44 @@ def changes(request, app_code):
             if lpid != pid:
                 changes.append((loc, 'changed'))
         current[loc] = pid
+
+    def _count_group_locales(group):
+        locales = set()
+        changes = [x['changes'] for x in group if x['changes']]
+        for change in changes:
+            locales.update(set(x[0] for x in change))
+        return len(locales)
+
+    groups = []
+    group = []
+    code = None
+
+    last = True
+    for row in reversed(rows):
+        if code is None:
+            code = row['code']
+        elif row['code'].startswith(code) or not row.get('isAppVersion'):
+            pass
+        elif len(groups) >= 3:
+            pass
+        else:
+            code = row['code']
+            # last item,
+            group[-1]['rowspan'] = len(group)
+            group[-1]['rowspan_last'] = last
+            last = False
+            group[-1]['group_locales_count'] = _count_group_locales(group)
+            groups.append(group)
+            group = []
+        group.append(row)
+
+    if group:
+        # append the left-overs from the loop
+        group[-1]['rowspan'] = len(group)
+        group[-1]['rowspan_last'] = last
+        group[-1]['group_locales_count'] = _count_group_locales(group)
+        groups.append(group)
+
     # see if we have some locales dropped in the last milestone
     if latest:
         # previous milestone has locales left, update previous changes
