@@ -50,7 +50,7 @@ def changes(request, app_code):
                 # if the loc isn't here, it's never been accepted so far
                 real_av, flags = flags4fallback[loc]
                 if Action.ACCEPTED in flags:
-                     locs4av[real_av] = flags[Action.ACCEPTED]
+                    locs4av[real_av] = flags[Action.ACCEPTED]
     # let's keep the current appver data around for later,
     # and order the fallbacks
     accepted = locs4av.pop(av.code, {})
