@@ -13,6 +13,7 @@
 {% compress css %}
 <link rel="stylesheet" href="{% static "css/jquery.ui/smoothness/jquery-ui-1.10.3.custom.css" %}" type="text/css">
 {% endcompress %}
+<link rel="stylesheet" href="{% static "css/jquery.ui/smoothness/jquery-ui-1.10.3.tooltip.min.css" %}" type="text/css">
 {% compress css %}
 <link rel="stylesheet" href="{% static "shipping/css/signoffs.css" %}" type="text/css">
 {% endcompress %}
@@ -20,6 +21,7 @@
 
 {% block javascript_matter %}
 <script src="{% static "js/jquery.ui/jquery-ui-1.10.3.custom.min.js" %}"></script>
+<script src="{% static "js/jquery.ui/jquery-ui-1.10.3.tooltip.min.js" %}"></script>
 
 <script>
 var diffData = {

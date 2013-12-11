@@ -6,14 +6,39 @@ var dropMode = null;
 function dropDiff(event, ui) {
   $(this).append(ui.draggable);
   ui.draggable.css('top', 0);
+  setupTooltips();
+}
+
+function setupTooltips() {
+  var shortrevs = $('.diffanchor').parent().prev().find('.shortrev').map(function() {
+    return $(this).text();
+  }).get();
+  $('.diffanchor').each(function() {
+    var self = $(this);
+    self.attr('title', '');
+    var msg;
+    if (shortrevs.length !== 2) return;
+    if (shortrevs[0] === shortrevs[1]) {
+      msg = 'Nothing to compare';
+    } else {
+      msg = 'Click to compare ' + shortrevs[0] + ' and ' + shortrevs[1];
+    }
+    self.attr('title', msg);
+    self.tooltip({ position: { my: "left+15 center", at: "right center" } });
+  });
 }
 
 $(document).ready(function() {
   $('.diffanchor').draggable({
-     appendTo: 'body',
+    appendTo: 'body',
     axis: 'y',
     revert: true,
     start: function(event, ui) {
+      try {
+        $('.diffanchor').tooltip('destroy');
+      } catch(e) {
+        // tooltip not yet initialized
+      }
       if (dropMode != 'diff') {
         $('.ui-droppable').droppable('destroy');
         $('.diff').droppable({
@@ -117,6 +142,9 @@ $(document).ready(function() {
       rs.dialog('open');
     });
   }
+
+  setupTooltips();
+
 });
 
 var Review = {
