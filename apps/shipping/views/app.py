@@ -55,18 +55,82 @@ def changes(request, app_code):
     # and order the fallbacks
     accepted = locs4av.pop(av.code, {})
     av_ = av
+    ng_groups = []
+    #T=0
+    pointer = 0
+    count=0
+    this_cycle = None
+    last_cycle = None
+    buckets = {}
+    pointers = {}
+    rowspans = defaultdict(int)
+    counts = {}
     while av_ and locs4av:
+        count += 1
+        print av_.code
+        if count == 1:
+            # "current cycle"
+            buckets[1] = {'av' :[av_.code], 'count': []}
+            pointers[av_.code] = 1
+        elif count == 2:
+            # "last cycle"
+            buckets[2] = {'av': [av_.code], 'count': []}
+            pointers[av_.code] = 2
+        elif count == 3 or count == 4:
+            prev = buckets.get(3, {'av': [], 'count': []})
+            prev['av'].append(av_.code)
+            buckets[3] = prev
+            pointers[av_.code] = 3
+        else:
+            prev = buckets.get(4, {'av': [], 'count': []})
+            prev['av'].append(av_.code)
+            buckets[4] = prev
+            pointers[av_.code] = 4
+
         if av_.code in locs4av:
+            #print (av_.code, locs4av)
+            #pointer+=1
             accepted4loc = locs4av.pop(av_.code)
+            bucket = pointers[av_.code]
+            buckets[bucket]['count'] += [len(accepted4loc)]
+
+            #T+=len(accepted4loc)
+            #print "\t", (av_.code, len(accepted4loc))
+
+            #print accepted4loc
+            #print (pointer, count)
+            #if pointer == 1:
+            #    bucket2['count'] = len(accepted4loc)
+            #elif pointer == 2:
+            #    bucket3['count'] = len(accepted4loc)
+            #elif pointer in (3,4):
+            #    bucket4['count']+= len(accepted4loc)
+
+            #print accepted4loc.keys()
+            #print "\n"
+
             # store actions for now, we'll get the push_ids later
             current.update(accepted4loc)
-            rows.append({
+            row = {
                 'name': str(av_),
                 'code': av_.code,
                 'isAppVersion': True,
                 'changes': [(loc, 'added') for loc in sorted(accepted4loc)]
-                })
+            }
+            counts[av_.code] = sum(buckets[bucket]['count'])
+            print "\t", av_.code, sum(buckets[bucket]['count'])
+            #if bucket not in rowspans:
+            #    rowspans[bucket] = len(buckets[bucket]['count'])
+            #rowspans[bucket] += len(buckets[bucket]['count'])
+            rows.append(row)
         av_ = av_.fallback
+    from pprint import pprint
+    print "BUCKETS"
+    pprint( buckets)
+    print "POINTERS"
+    pprint(pointers)
+#    print "COUNTS"
+#    pprint(counts)
     rows.reverse()
     for loc, pid in (Signoff.objects
                      .filter(action__in=current.values())
@@ -78,6 +142,7 @@ def changes(request, app_code):
                      .values_list('locale__code',
                                   'push__id')):
         accepted[loc] = pid
+
     for _mid, loc, pid in (Milestone_Signoffs.objects
                            .filter(milestone__appver=av)
                            .order_by('milestone__id',
@@ -96,6 +161,9 @@ def changes(request, app_code):
             current = {}
             ms_name = ms_names[ms_id]
             changes = []
+#            print "LAST CODE", ms_codes[ms_id]
+#            print changes
+#            print
             rows.append({'name': ms_name,
                          'code': ms_codes[ms_id],
                          'changes': changes})
@@ -143,6 +211,12 @@ def changes(request, app_code):
         group[-1]['rowspan_last'] = last
         group[-1]['group_locales_count'] = _count_group_locales(group)
         groups.append(group)
+
+    from pprint import pprint
+
+    #pprint(groups[0])
+#    pprint(groups)
+#    pprint(rows)
 
     # see if we have some locales dropped in the last milestone
     if latest:
