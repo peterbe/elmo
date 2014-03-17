@@ -31,6 +31,8 @@ ENV_BRANCH = {
 
 GIT_PULL = "git pull -q origin %(branch)s"
 GIT_SUBMODULE = "git submodule update --init --recursive"
+MEDIA_DIRECTORY = "mkdir -p media"
+GIT_REVISION = "git rev-parse HEAD > media/revision"
 SOUTH_EXEC = "./manage.py migrate"
 STATICFILES_COLLECT_EXEC = "./manage.py collectstatic --noinput"
 DJANGOCOMPRESSOR_COMPRESS_EXEC = "./manage.py compress"
@@ -51,6 +53,8 @@ def update_site(env, debug):
         (CHDIR, here),
         (EXEC,  GIT_PULL % project_branch),
         (EXEC,  GIT_SUBMODULE),
+        (EXEC,  MEDIA_DIRECTORY),
+        (EXEC,  GIT_REVISION),
     ]
 
     commands += [
